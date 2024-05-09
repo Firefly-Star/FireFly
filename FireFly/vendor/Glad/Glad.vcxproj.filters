@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="bin">
+      <UniqueIdentifier>{BE61880B-2A6B-887C-B3E6-9E7C1FEF937C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bin\Debug-windows-x86_64">
+      <UniqueIdentifier>{28EF3B9B-1414-8B1B-3D5F-70AB29E38939}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bin\Debug-windows-x86_64\Glad">
+      <UniqueIdentifier>{0FEFD2B9-7B07-BAE3-44B4-497DB08B4E7D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bin-int">
+      <UniqueIdentifier>{168B5978-826A-D813-8B82-63EAF7E03E75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bin-int\Debug-windows-x86_64">
+      <UniqueIdentifier>{805FDA77-6C1A-CA23-15D2-426E016C14B4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bin-int\Debug-windows-x86_64\Glad">
+      <UniqueIdentifier>{67563D38-D3C4-92B7-1CAE-4DB7885B8853}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog">
+      <UniqueIdentifier>{B24F7E05-1EB5-118C-A78D-B36413F206FB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\KHR">
+      <UniqueIdentifier>{7D5AC031-E90F-3927-7204-33FEDEB82F2B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\glad">
+      <UniqueIdentifier>{30A0DB69-1C03-6B0E-C588-A3C4B1CA3691}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\KHR\khrplatform.h">
+      <Filter>include\KHR</Filter>
+    </ClInclude>
+    <ClInclude Include="include\glad\glad.h">
+      <Filter>include\glad</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\glad.c">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Glad.vcxproj" />
+    <None Include="Glad.vcxproj.filters" />
+    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.Build.CppClean.log">
+      <Filter>bin-int\Debug-windows-x86_64\Glad</Filter>
+    </None>
+    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.lib.recipe">
+      <Filter>bin-int\Debug-windows-x86_64\Glad</Filter>
+    </None>
+    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.log">
+      <Filter>bin-int\Debug-windows-x86_64\Glad</Filter>
+    </None>
+    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\CL.command.1.tlog">
+      <Filter>bin-int\Debug-windows-x86_64\Glad\Glad.tlog</Filter>
+    </None>
+    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\CL.read.1.tlog">
+      <Filter>bin-int\Debug-windows-x86_64\Glad\Glad.tlog</Filter>
+    </None>
+    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\CL.write.1.tlog">
+      <Filter>bin-int\Debug-windows-x86_64\Glad\Glad.tlog</Filter>
+    </None>
+    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\Cl.items.tlog">
+      <Filter>bin-int\Debug-windows-x86_64\Glad\Glad.tlog</Filter>
+    </None>
+    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\Glad.lastbuildstate">
+      <Filter>bin-int\Debug-windows-x86_64\Glad\Glad.tlog</Filter>
+    </None>
+    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\Lib-link.read.1.tlog">
+      <Filter>bin-int\Debug-windows-x86_64\Glad\Glad.tlog</Filter>
+    </None>
+    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\Lib-link.write.1.tlog">
+      <Filter>bin-int\Debug-windows-x86_64\Glad\Glad.tlog</Filter>
+    </None>
+    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\Lib.command.1.tlog">
+      <Filter>bin-int\Debug-windows-x86_64\Glad\Glad.tlog</Filter>
+    </None>
+    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.vcxproj.FileListAbsolute.txt">
+      <Filter>bin-int\Debug-windows-x86_64\Glad</Filter>
+    </None>
+    <None Include="bin-int\Debug-windows-x86_64\Glad\glad.obj">
+      <Filter>bin-int\Debug-windows-x86_64\Glad</Filter>
+    </None>
+    <None Include="bin\Debug-windows-x86_64\Glad\Glad.lib">
+      <Filter>bin\Debug-windows-x86_64\Glad</Filter>
+    </None>
+    <None Include="bin\Debug-windows-x86_64\Glad\Glad.pdb">
+      <Filter>bin\Debug-windows-x86_64\Glad</Filter>
+    </None>
+    <None Include="premake5.lua" />
+  </ItemGroup>
+</Project>
