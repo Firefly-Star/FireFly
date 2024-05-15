@@ -15,7 +15,11 @@ namespace FireFly
 
 	Window* Window::Create(const WindowProp& windowProp)
 	{
-		Window* ptr = new WindowsWindow(windowProp);
+		static Window* ptr = nullptr;
+		if (!ptr)
+		{
+			ptr = new WindowsWindow(windowProp);
+		}
 		return ptr;
 	}
 

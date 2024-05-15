@@ -5,7 +5,7 @@
 
 namespace FireFly
 {
-	class FF_API WindowResizeEvent : public Event
+	class WindowResizeEvent : public Event
 	{
 	public:
 		WindowResizeEvent(unsigned int width, unsigned int height) : m_Width(width), m_Height(height) {}
@@ -25,7 +25,7 @@ namespace FireFly
 		unsigned int m_Height;
 	};
 
-	class FF_API WindowMovedEvent : public Event
+	class WindowMovedEvent : public Event
 	{
 	public:
 		WindowMovedEvent(float x, float y) : m_MoveX(x), m_MoveY(y) {}
@@ -46,21 +46,21 @@ namespace FireFly
 		float m_MoveY;
 	};
 
-	class FF_API WindowCloseEvent : public Event
+	class WindowCloseEvent : public Event
 	{
 	public:
 		EVENT_CATEGORY_FUNCTION((int)EventCategory::EventWindow)
 		EVENT_TYPE_FUNCTION(WindowClose)
 	};
 
-	class FF_API WindowFocusEvent : public Event
+	class WindowFocusEvent : public Event
 	{
 	public:
 		EVENT_CATEGORY_FUNCTION((int)EventCategory::EventWindow)
 		EVENT_TYPE_FUNCTION(WindowFocus)
 	};
 
-	class FF_API WindowLostFocusEvent : public Event
+	class WindowLostFocusEvent : public Event
 	{
 	public:
 		EVENT_CATEGORY_FUNCTION((int)EventCategory::EventWindow)

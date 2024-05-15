@@ -24,9 +24,10 @@ workspace "FireFly"
 	project "FireFly"
 
 		location "FireFly"
-		kind "SharedLib"
+		kind "StaticLib"
 		language "C++"
-		staticruntime "Off"
+		cppdialect "C++17"
+		staticruntime "On"
 
 		targetdir ("bin/" .. outputdir .. "/%{ prj.name }")
 		objdir ("bin-int/" .. outputdir .. "/%{ prj.name }")
@@ -68,22 +69,12 @@ workspace "FireFly"
 
 		
 		filter "system:windows"
-			cppdialect "C++17"
 			systemversion "latest"
 		
 			defines
 			{
 				"FF_PLATFORM_WINDOWS",
 				"FF_BUILD_DLL"
-			}
-		
-		
-			local copycommand = "{COPYFILE} %[bin/" .. outputdir .. "/%{prj.name}/%{prj.name}.dll] %[bin/" .. outputdir.. "/Sandbox/]"
-			
-			postbuildcommands
-			{
-				--"{COPYFILE} %[bin\\Debug-windows-x86_64\\FireFly\\FireFly.dll] %[bin\\Debug-windows-x86_64\\Sandbox\\]"
-				copycommand
 			}
 		
 		filter "configurations:Debug"
@@ -107,9 +98,10 @@ workspace "FireFly"
 		location "Sandbox"
 		kind "ConsoleApp"
 		language "C++"
-		staticruntime "Off"
+		cppdialect "C++17"
+		staticruntime "On"
 
-		targetdir ("bin/" .. outputdir .. "/%{ prj.name }")
+		targetdir ("bin/" .. outputdir .. "/%{ prj.name }	")
 		objdir ("bin-int/" .. outputdir .. "/%{ prj.name }")
 
 		files
@@ -131,7 +123,6 @@ workspace "FireFly"
 		}
 
 		filter "system:windows"
-			cppdialect "C++17"
 			systemversion "latest"
 
 			defines

@@ -5,7 +5,7 @@
 
 namespace FireFly
 {
-	class FF_API KeyEvent : public Event
+	class KeyEvent : public Event
 	{
 	protected:
 		KeyEvent(int keycode) : m_Keycode(keycode){}
@@ -16,7 +16,7 @@ namespace FireFly
 		EVENT_CATEGORY_FUNCTION((int)EventCategory::EventKey | (int)EventCategory::EventInput)
 	};
 
-	class FF_API KeyPressedEvent : public KeyEvent
+	class KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(int keycode, int repeatcount) : KeyEvent(keycode), m_RepeatCount(repeatcount) {}
@@ -32,7 +32,7 @@ namespace FireFly
 		int m_RepeatCount;
 	};
 
-	class FF_API KeyReleasedEvent : public KeyEvent
+	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		KeyReleasedEvent(int keycode) : KeyEvent(keycode) {}
@@ -46,7 +46,7 @@ namespace FireFly
 		EVENT_TYPE_FUNCTION(KeyReleased)
 	};
 
-	class FF_API KeyTypedEvent : public Event
+	class KeyTypedEvent : public Event
 	{
 	public:
 		KeyTypedEvent(unsigned int character) : m_Character(character) {}

@@ -15,7 +15,7 @@ namespace FireFly
 			: m_Height(height), m_Width(width), m_Tittle(tittle){}
 	};
 
-	class FF_API Window
+	class Window
 	{
 	public:
 		using EventCallBackFunc = std::function<void(Event&)>;

@@ -33,7 +33,7 @@ namespace FireFly
 #define EVENT_CATEGORY_FUNCTION(category)\
 	virtual int GetEventCategory() const override { return (category); }
 
-	class FF_API Event
+	class Event
 	{
 		friend class EventDispatcher;
 	public:
@@ -54,7 +54,7 @@ namespace FireFly
 	};
 	
 
-	class FF_API EventDispatcher
+	class EventDispatcher
 	{
 	public:
 		EventDispatcher(Event& e) : m_Event(e){}

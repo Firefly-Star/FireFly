@@ -1,15 +1,5 @@
 #pragma once
 
-#ifdef FF_PLATFORM_WINDOWS
-	#ifdef FF_BUILD_DLL
-		#define FF_API _declspec(dllexport)
-	#else 
-		#define FF_API _declspec(dllimport)
-	#endif
-#else
-	#error FireFly now only supports Windows!
-#endif
-
 #define BIT(x) (1 << (x))
 
 #define FF_BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)

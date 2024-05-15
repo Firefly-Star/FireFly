@@ -10,6 +10,8 @@
 // Implemented features:
 //  [X] Renderer: User texture binding. Use 'SDL_Texture*' as ImTextureID. Read the FAQ about ImTextureID!
 //  [X] Renderer: Large meshes support (64k+ vertices) with 16-bit indices.
+// Missing features:
+//  [ ] Renderer: Multi-viewport support (multiple windows).
 
 // You can copy and use unmodified imgui_impl_* files in your project. See examples/ folder for examples of using this.
 // Prefer including the entire imgui/ repository into your project (either as a copy or as a submodule), and only build the backends you need.
@@ -100,7 +102,7 @@ static void ImGui_ImplSDLRenderer3_SetupRenderState()
 void ImGui_ImplSDLRenderer3_NewFrame()
 {
     ImGui_ImplSDLRenderer3_Data* bd = ImGui_ImplSDLRenderer3_GetBackendData();
-    IM_ASSERT(bd != nullptr && "Did you call ImGui_ImplSDLRenderer3_Init()?");
+    IM_ASSERT(bd != nullptr && "Context or backend not initialized! Did you call ImGui_ImplSDLRenderer3_Init()?");
 
     if (!bd->FontTexture)
         ImGui_ImplSDLRenderer3_CreateDeviceObjects();

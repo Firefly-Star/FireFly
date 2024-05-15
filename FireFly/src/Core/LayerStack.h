@@ -7,7 +7,7 @@
 
 namespace FireFly
 {
-	class FF_API LayerStack
+	class LayerStack
 	{
 	public:
 		LayerStack();

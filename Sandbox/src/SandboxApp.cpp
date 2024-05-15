@@ -20,12 +20,6 @@ public:
 
 		return false;
 	}
-	virtual void OnUpdate()
-	{
-
-	}
-private:
-
 };
 
 
@@ -33,9 +27,7 @@ private:
 FireFly::Application* FireFly::CreateApplication()
 {
 	FireFly::Application* app = Application::GetInstance();
-	ImGuiLayer* layer = new ImGuiLayer();
 	ExampleLayer* examplelayer = new ExampleLayer();
-	app->PushOverLayer(layer);
 	app->PushLayer(examplelayer);
 	return app;
 }

@@ -5,10 +5,11 @@
 #include "Events/WindowEvent.h"
 #include "Window.h"
 #include "LayerStack.h"
+#include "ImGui/ImGuiLayer.h"
 
 namespace FireFly 
 {
-	class FF_API Application
+	class Application
 	{
 	public:
 		static Application* GetInstance();
@@ -28,7 +29,8 @@ namespace FireFly
 		Application();
 		virtual ~Application();
 	private:
-		std::unique_ptr<Window> m_Window;
+		Window* m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 
 		bool OnEvent(Event& e);

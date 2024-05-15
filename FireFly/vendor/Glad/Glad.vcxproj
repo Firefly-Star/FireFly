@@ -24,7 +24,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+    <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
@@ -54,20 +54,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>bin\Debug-windows-x86_64\Glad\</OutDir>
-    <IntDir>bin-int\Debug-windows-x86_64\Glad\</IntDir>
+    <OutDir>..\..\..\bin\Debug-windows-x86_64\Glad\</OutDir>
+    <IntDir>..\..\..\bin-int\Debug-windows-x86_64\Glad\</IntDir>
     <TargetName>Glad</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>bin\Release-windows-x86_64\Glad\</OutDir>
-    <IntDir>bin-int\Release-windows-x86_64\Glad\</IntDir>
+    <OutDir>..\..\..\bin\Release-windows-x86_64\Glad\</OutDir>
+    <IntDir>..\..\..\bin-int\Release-windows-x86_64\Glad\</IntDir>
     <TargetName>Glad</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
-    <OutDir>bin\Dist-windows-x86_64\Glad\</OutDir>
-    <IntDir>bin-int\Dist-windows-x86_64\Glad\</IntDir>
+    <OutDir>..\..\..\bin\Dist-windows-x86_64\Glad\</OutDir>
+    <IntDir>..\..\..\bin-int\Dist-windows-x86_64\Glad\</IntDir>
     <TargetName>Glad</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
@@ -76,12 +76,14 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -89,12 +91,18 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Optimization>Disabled</Optimization>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -120,21 +128,6 @@
   <ItemGroup>
     <None Include="Glad.vcxproj" />
     <None Include="Glad.vcxproj.filters" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.Build.CppClean.log" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.lib.recipe" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.log" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\CL.command.1.tlog" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\CL.read.1.tlog" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\CL.write.1.tlog" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\Cl.items.tlog" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\Glad.lastbuildstate" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\Lib-link.read.1.tlog" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\Lib-link.write.1.tlog" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.tlog\Lib.command.1.tlog" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\Glad.vcxproj.FileListAbsolute.txt" />
-    <None Include="bin-int\Debug-windows-x86_64\Glad\glad.obj" />
-    <None Include="bin\Debug-windows-x86_64\Glad\Glad.lib" />
-    <None Include="bin\Debug-windows-x86_64\Glad\Glad.pdb" />
     <None Include="premake5.lua" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -13,10 +13,9 @@
 
 namespace FireFly
 {
-	ImGuiLayer::ImGuiLayer(const std::string& name)
-		:Layer(name)
+	ImGuiLayer::ImGuiLayer(const std::string& name, void* window)
+		:Layer(name, window)
 	{
-		m_Window = (void*)Application::GetInstance()->GetWindow().GetWindowHandle();
 	}
 
 	ImGuiLayer::~ImGuiLayer()
@@ -29,47 +28,39 @@ namespace FireFly
 		GLFWwindow* window = (GLFWwindow*)m_Window;
 		FF_CORE_ASSERT(window && !glfwWindowShouldClose(window) && glfwGetCurrentContext() == window, "Invalid Window!")
 
-		if (!ImGui::GetCurrentContext())
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.FontGlobalScale = 1.5f;
+
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // Enable Docking
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;       // Enable Multi-Viewport / Platform Windows
+
+		ImGui::StyleColorsDark();
+		//ImGui::StyleColorsLight();
+
+		// When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
+		ImGuiStyle& style = ImGui::GetStyle();
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-			ImGui::CreateContext();
-			ImGuiIO& io = ImGui::GetIO();
-			io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-			ImGui::StyleColorsDark();
-
-			io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-			io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
-
-			ImGui_ImplGlfw_InitForOpenGL(window, true);
-			ImGui_ImplOpenGL3_Init("#version 330");
+			style.WindowRounding = 0.0f;
+			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 		}
-	}
 
-	void ImGuiLayer::OnUpdate()
-	{
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplOpenGL3_Init("#version 330");
 		
-
-		ImGuiIO& io = ImGui::GetIO();
-
-		Application* app = Application::GetInstance();
-
-		io.DisplaySize = ImVec2(2*(float)app->GetWindow().GetWidth(), 2*(float)app->GetWindow().GetHeight());
-
-		float time = float(glfwGetTime());
-		io.DeltaTime = m_Time != 0 ? (time - m_Time) : (1 / 60.0f);
-		m_Time = time;
-
-		//ImGui::ShowDemoWindow();
-		ImGui::Begin("type");
-		char a[100] = "Hello World!";
-		ImGui::InputText("test", a, 100);
-		ImGui::End();
-
-		ImGui::Render();
+	
 	}
 
 	void ImGuiLayer::OnDettach()
 	{
-
+		// Cleanup
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
 	}
 
 	void ImGuiLayer::Begin()
@@ -77,8 +68,6 @@ namespace FireFly
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
-
-		ImGui::Begin();
 	}
 
 	void ImGuiLayer::End()
@@ -90,11 +79,22 @@ namespace FireFly
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		
-		if (true)
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 		{
-
+			GLFWwindow* backup_current_context = glfwGetCurrentContext();
+			ImGui::UpdatePlatformWindows();
+			ImGui::RenderPlatformWindowsDefault();
+			glfwMakeContextCurrent(backup_current_context);
 		}
-		ImGui::End();
+	}
 
+	void ImGuiLayer::OnRender()
+	{
+		static bool show = true;
+		ImGui::ShowDemoWindow(&show);
+
+		ImGui::Begin("Test");
+		ImGui::Text("12345");
+		ImGui::End();
 	}
 }

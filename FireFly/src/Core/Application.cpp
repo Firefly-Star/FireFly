@@ -36,8 +36,11 @@ namespace FireFly
 	Application::Application()
 	{
 		WindowProp prop(1600, 960);
-		m_Window = std::unique_ptr<Window>(Window::Create(prop));
+		m_Window = Window::Create(prop);
 		m_Window->SetEventCallback(FF_BIND_EVENT_FN(Application::OnEvent));
+		void* window_ptr = m_Window->GetWindowHandle();
+		m_ImGuiLayer = new ImGuiLayer("ImGui", window_ptr);
+		m_ImGuiLayer->OnAttach();
 	}
 
 	Application::~Application()
@@ -62,11 +65,12 @@ namespace FireFly
 				it->OnUpdate();
 			}
 
+			m_ImGuiLayer->Begin();
+			m_ImGuiLayer->OnRender();
+			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
 		}
-
-
 	}
 
 	void Application::PushLayer(Layer* layer)

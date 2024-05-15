@@ -4,7 +4,7 @@
 
 namespace FireFly
 {
-	class FF_API Input
+	class Input
 	{
 	public:
 		Input(void* window): m_Window(window) {}

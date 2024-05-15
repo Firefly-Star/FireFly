@@ -10,7 +10,7 @@ struct GLFWwindow;
 
 namespace FireFly
 {
-	class FF_API WindowsWindow : public Window
+	class WindowsWindow : public Window
 	{
 	public:
 		WindowsWindow(const WindowProp& windowProp = WindowProp());
@@ -36,7 +36,7 @@ namespace FireFly
 		static bool s_IsGLFWInitialized;
 	};
 
-	/*class FF_API WindowsWindowLayer : Layer
+	/*class WindowsWindowLayer : Layer
 	{
 	public:
 		WindowsWindowLayer(const std::string name = "Windows Window Layer");

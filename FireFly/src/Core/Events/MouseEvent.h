@@ -5,7 +5,7 @@
 
 namespace FireFly
 {
-	class FF_API MouseMovedEvent : public Event
+	class MouseMovedEvent : public Event
 	{
 	public:
 		MouseMovedEvent(float x, float y) : m_MoveX(x), m_MoveY(y) {}
@@ -26,7 +26,7 @@ namespace FireFly
 		float m_MoveY;
 	};
 
-	class FF_API MouseScrolledEvent : public Event
+	class MouseScrolledEvent : public Event
 	{
 	public:
 		MouseScrolledEvent(float x, float y) : m_OffsetX(x), m_OffsetY(y) {}
@@ -47,7 +47,7 @@ namespace FireFly
 		float m_OffsetY;
 	};
 
-	class FF_API MouseButtonEvent : public Event
+	class MouseButtonEvent : public Event
 	{
 	public:
 		inline int GetButton() const { return m_Button; }
@@ -58,7 +58,7 @@ namespace FireFly
 		int m_Button;
 	};
 
-	class FF_API MousePressedEvent : public MouseButtonEvent
+	class MousePressedEvent : public MouseButtonEvent
 	{
 	public:
 		MousePressedEvent(int button) : MouseButtonEvent(button) {}
@@ -71,7 +71,7 @@ namespace FireFly
 		EVENT_TYPE_FUNCTION(MousePressed)
 	};
 
-	class FF_API MouseReleasedEvent : public MouseButtonEvent
+	class MouseReleasedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseReleasedEvent(int button) : MouseButtonEvent(button) {}

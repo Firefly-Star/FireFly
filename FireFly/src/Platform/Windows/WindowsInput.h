@@ -4,7 +4,7 @@
 
 namespace FireFly
 {
-	class FF_API WindowsInput : public Input
+	class WindowsInput : public Input
 	{
 	public:
 		WindowsInput (void* window = nullptr) : Input(window) {}

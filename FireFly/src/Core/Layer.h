@@ -5,10 +5,10 @@
 
 namespace FireFly
 {
-	class FF_API Layer
+	class Layer
 	{
 	public:
-		Layer(const std::string& name = "layer") :m_Name(name) {}
+		Layer(const std::string& name = "layer", void* window = nullptr) :m_Name(name), m_Window(window) {}
 		virtual ~Layer(){}
 
 		virtual void OnUpdate(){}
@@ -16,7 +16,9 @@ namespace FireFly
 		virtual void OnAttach(){}
 		virtual void OnRender() {}
 		virtual void OnDettach(){}
-	private:
+		inline void* GetWindow() { return m_Window; }
+	protected:
 		std::string m_Name;
+		void* m_Window;
 	};
 }
