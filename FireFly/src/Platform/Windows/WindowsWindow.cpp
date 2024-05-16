@@ -1,6 +1,5 @@
 #include "ffpch.h"
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "WindowsWindow.h"
@@ -8,6 +7,8 @@
 #include "Core/Events/KeyEvent.h"
 #include "Core/Events/WindowEvent.h"
 #include "Core/Events/MouseEvent.h"
+
+#include "Platform/OpenGL/OpenGLContext.h"
 
 namespace FireFly
 {
@@ -21,6 +22,11 @@ namespace FireFly
 			ptr = new WindowsWindow(windowProp);
 		}
 		return ptr;
+	}
+
+	void Window::Terminate()
+	{
+		glfwTerminate();
 	}
 
 	WindowsWindow::WindowsWindow(const WindowProp& windowProp)
@@ -53,8 +59,10 @@ namespace FireFly
 		m_Input = new WindowsInput(m_Window);
 
 		m_Window = glfwCreateWindow(windowProp.m_Width, windowProp.m_Height, windowProp.m_Tittle.c_str(), nullptr, nullptr);
-		glfwMakeContextCurrent(m_Window);
-		FF_CORE_ASSERT(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "Failed to initialize Glad!")
+		
+		m_Context = new OpenGLContext(m_Window);
+		m_Context->Init();
+
 		glfwSetWindowUserPointer(m_Window, &m_WindowData);
 		SetVsync(true);
 
@@ -148,9 +156,7 @@ namespace FireFly
 	}
 	void WindowsWindow::OnUpdate()
 	{
-
-		glfwPollEvents();
-		glfwSwapBuffers(m_Window);
+		m_Context->SwapBuffer();
 	}
 
 	void WindowsWindow::Shutdown()

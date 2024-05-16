@@ -7,6 +7,11 @@
 #include "LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
 
+// TEMP
+#include "Renderer/Shader.h"
+#include "Renderer/Buffer.h"
+//TEMP
+
 namespace FireFly 
 {
 	class Application
@@ -39,9 +44,14 @@ namespace FireFly
 		static Application* app;
 
 		LayerStack m_LayerStack;
-	};
-	
 
+		// TEMP
+		Shader* shader;
+		VertexBuffer* vertexbuffer;
+		IndexBuffer* indexbuffer;
+		unsigned int  vertexarray;
+		//TEMP
+	};
 
 	//To be defined in the CLIENT(Sandbox)
 	Application* CreateApplication();

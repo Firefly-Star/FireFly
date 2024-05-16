@@ -34,6 +34,8 @@ namespace FireFly
 
 		static Window* Create(const WindowProp& windowProp = WindowProp());
 
+		static void Terminate();
+
 		inline const Input* GetInput() { return m_Input; }
 	protected:
 		Input* m_Input = nullptr;

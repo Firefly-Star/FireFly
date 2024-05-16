@@ -5,6 +5,7 @@
 #include "Core/Window.h"
 #include "Core/Layer.h"
 #include "WindowsInput.h"
+#include "Platform/OpenGL/OpenGLContext.h"
 
 struct GLFWwindow;
 
@@ -34,6 +35,7 @@ namespace FireFly
 		GLFWwindow* m_Window;
 		WindowData m_WindowData;
 		static bool s_IsGLFWInitialized;
+		GraphicContext* m_Context;
 	};
 
 	/*class WindowsWindowLayer : Layer

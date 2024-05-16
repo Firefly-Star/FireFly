@@ -10,9 +10,13 @@
 #include "Core/Events/WindowEvent.h"
 #include "Log.h"
 
+//TEMP
+#include "Platform/OpenGL/OpenGLError.h"
+//TEMP
+
+
 namespace FireFly
 {
-
 	Application* Application::app = nullptr;
 
 	Application* Application::GetInstance()
@@ -41,6 +45,57 @@ namespace FireFly
 		void* window_ptr = m_Window->GetWindowHandle();
 		m_ImGuiLayer = new ImGuiLayer("ImGui", window_ptr);
 		m_ImGuiLayer->OnAttach();
+
+		//TEMP
+		std::string vs =R"(
+		#version 330 core
+
+		layout(location = 0) in vec3 a_Position;	
+		
+		void main()
+		{
+			gl_Position = vec4(a_Position, 1.0);
+		}
+		)";
+
+		std::string fs = R"(
+		#version 330 core
+
+		layout(location = 0) out vec4 color;
+		
+		void main()
+		{
+			color = vec4(0.8, 0.2, 0.3, 1.0);
+		}
+		)";
+
+		shader = Shader::Create(vs, fs);
+		shader->Bind();
+
+		GLCALL(glGenVertexArrays(1, &vertexarray));
+		GLCALL(glBindVertexArray(vertexarray));
+
+		GLCALL(glEnableVertexAttribArray(0));
+		
+		
+		float vertices[] =
+		{
+			-0.5f, -0.5f, 0.0f,
+			 0.5f, -0.5f, 0.0f,
+			 0.0f,  0.5f, 0.0f
+		};
+		
+		vertexbuffer = VertexBuffer::Create(vertices, 9 * sizeof(float));
+		
+		GLCALL(glVertexAttribPointer(0, 3 , GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr));
+		
+		unsigned int indices[] =
+		{
+			0, 1, 2
+		};
+		
+		indexbuffer = IndexBuffer::Create(indices, 3 * sizeof(unsigned int));
+		//TEMP
 	}
 
 	Application::~Application()
@@ -52,8 +107,11 @@ namespace FireFly
 	{
 		while (m_Running)
 		{
-			glClearColor(0.2f, 0.5f, 0.5f, 1.0f);
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			shader->Bind();
+			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
 			for (auto it : m_LayerStack.GetLayers())
 			{
