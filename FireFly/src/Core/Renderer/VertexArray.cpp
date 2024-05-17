@@ -7,8 +7,11 @@
 
 namespace FireFly
 {
+	unsigned int VertexArray::s_Count = 0;
+	unsigned int VertexArray::s_ReadyForRendering = 0;
+
 	VertexArray::VertexArray()
-		:m_VertexBuffer(nullptr), m_IndexBuffer(nullptr), m_Shader(nullptr), m_BufferLayout(nullptr)
+		:m_VertexBuffer(nullptr), m_IndexBuffer(nullptr), m_Shader(nullptr), m_BufferLayout(nullptr), m_ID(++ s_Count)
 	{
 		m_BufferLayout = BufferLayout::Create();
 	}
@@ -23,9 +26,9 @@ namespace FireFly
 
 	VertexArray* VertexArray::Create()
 	{
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::OpenGL: return new OpenGLVertxArray();
+		case RendererAPI::API::OpenGL: return new OpenGLVertxArray();
 		}
 
 		FF_CORE_ASSERT(false, "Unknown API!");

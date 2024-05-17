@@ -37,5 +37,10 @@ namespace FireFly
 		const IndexBuffer* m_IndexBuffer;
 		BufferLayout* m_BufferLayout;
 		const Shader* m_Shader;
+
+		unsigned int m_ID;
+
+		static unsigned int s_Count;
+		static unsigned int s_ReadyForRendering;
 	};
 }

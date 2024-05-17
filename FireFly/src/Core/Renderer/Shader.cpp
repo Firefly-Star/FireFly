@@ -8,9 +8,9 @@ namespace FireFly
 {
 	Shader* Shader::Create(const std::string& vertexSRC, const std::string& fragmentSRC)
 	{
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::OpenGL:
+		case RendererAPI::API::OpenGL:
 			return new OpenGLShader(vertexSRC, fragmentSRC);
 		}
 

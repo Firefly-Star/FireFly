@@ -8,8 +8,9 @@
 #include "Core/Events/WindowEvent.h"
 #include "Log.h"
 
+
+#include "Renderer/Renderer.h"
 //TEMP
-#include <glad/glad.h>
 #include "Platform/OpenGL/OpenGLError.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
 //TEMP
@@ -99,8 +100,7 @@ namespace FireFly
 		
 		vertexarray->SetIndexBuffer(indices, 3 * 4);
 
-		vertexarray->PreForRender();
-		//TEMP
+		//TEMP	
 	}
 
 	Application::~Application()
@@ -114,10 +114,12 @@ namespace FireFly
 	{
 		while (m_Running)
 		{
-			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RendererCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+			RendererCommand::ClearColor();
 
-			vertexarray->Render();
+			Renderer::BeginScene();
+			RendererCommand::DrawIndexed(vertexarray);
+
 
 			for (auto it : m_LayerStack.GetLayers())
 			{

@@ -30,13 +30,18 @@ namespace FireFly
 
 	void OpenGLVertxArray::PreForRender() const
 	{
-		GLCALL(glBindVertexArray(m_RendererID));
+		if (s_ReadyForRendering != m_ID)
+		{
+			GLCALL(glBindVertexArray(m_RendererID));
 		
-		m_Shader->Bind();
-		m_VertexBuffer->Bind();
-		m_IndexBuffer->Bind();
+			m_Shader->Bind();
+			m_VertexBuffer->Bind();
+			m_IndexBuffer->Bind();
 
-		m_BufferLayout->UploadLayout();
+			m_BufferLayout->UploadLayout();
+
+			s_ReadyForRendering = m_ID;
+		}
 	}
 
 	void OpenGLVertxArray::Render() const

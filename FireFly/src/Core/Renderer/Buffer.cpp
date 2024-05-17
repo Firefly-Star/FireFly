@@ -29,16 +29,13 @@ namespace FireFly
 
 	BufferLayout* BufferLayout::Create()
 	{
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::None:
-			FF_CORE_ERROR("API is not specified!");
-			return nullptr;
-		case RendererAPI::OpenGL:
+		case RendererAPI::API::OpenGL:
 			return new OpenGLBufferLayout();
 		}
 
-		FF_CORE_ERROR("Unknown API!");
+		FF_CORE_ASSERT(false, "Unknown API!");
 		return nullptr;
 	}
 
@@ -63,9 +60,9 @@ namespace FireFly
 	//--------VertexBuffer-----------
 	VertexBuffer* VertexBuffer::Create(float* vertices, unsigned int size)
 	{
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::OpenGL:
+		case RendererAPI::API::OpenGL:
 			return new OpenGLVertexBuffer(vertices, size);
 		}
 
@@ -76,9 +73,9 @@ namespace FireFly
 	//----------IndexBuffer----------
 	IndexBuffer* IndexBuffer::Create(unsigned int* indices, unsigned int size)
 	{
-		switch (Renderer::GetAPI())
+		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::OpenGL:
+		case RendererAPI::API::OpenGL:
 			return new OpenGLIndexBuffer(indices, size);
 		}
 
