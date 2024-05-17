@@ -6,6 +6,46 @@
 
 namespace FireFly
 {
+
+	//---------BufferLayout---------
+	std::pair<unsigned int, unsigned char> LayoutElementType_OpenGLBaseType(LayoutElementType type)//  .first: type  .second: normalized
+	{
+		switch (type)
+		{
+		case LayoutElementType::Float:     return std::make_pair(GL_FLOAT, GL_FALSE);       break;
+		case LayoutElementType::Float2:    return std::make_pair(GL_FLOAT, GL_FALSE);	    break;
+		case LayoutElementType::Float3:    return std::make_pair(GL_FLOAT, GL_FALSE);		break;
+		case LayoutElementType::Float4:    return std::make_pair(GL_FLOAT, GL_FALSE);		break;
+		case LayoutElementType::Mat3:      return std::make_pair(GL_FLOAT, GL_FALSE);	    break;
+		case LayoutElementType::Mat4:      return std::make_pair(GL_FLOAT, GL_FALSE);	    break;
+		case LayoutElementType::Int:       return std::make_pair(GL_INT, GL_FALSE);			break;
+		case LayoutElementType::Int2:      return std::make_pair(GL_INT, GL_FALSE);		    break;
+		case LayoutElementType::Int3:      return std::make_pair(GL_INT, GL_FALSE);		    break;
+		case LayoutElementType::Int4:      return std::make_pair(GL_INT, GL_FALSE);		    break;
+		}
+
+		FF_CORE_ASSERT(false, "Unknown Type!");
+		return std::make_pair(0, 0);
+	}
+
+	void OpenGLBufferLayout::UploadLayout() const
+	{
+		unsigned int offset = 0;
+		unsigned int index = 0;
+
+		for (auto element : m_Elements)
+		{
+			GLCALL(glEnableVertexAttribArray(index));
+			auto [offsetplus, size] = LayoutElementType_Size(element.type);
+			auto [type, normalized] = LayoutElementType_OpenGLBaseType(element.type);
+			FF_CORE_INFO("name: {}, offsetplus:{}, size:{}, type:{}, normalized:{}, offset: {}", element.name, offsetplus, size, type, normalized, offset);
+			GLCALL(glVertexAttribPointer(index, size, type, normalized, m_Stride, (void*)offset));
+			index++;
+			offset += offsetplus;
+		}
+	}
+
+	//--------VertexBuffer-----------
 	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, unsigned int size)
 		:m_RendererID(0)
 	{
@@ -30,8 +70,9 @@ namespace FireFly
 		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	}
 
+	//----------IndexBuffer----------
 	OpenGLIndexBuffer::OpenGLIndexBuffer(unsigned int* indices, unsigned int size)
-		:m_RendererID(0)
+		:m_RendererID(0), m_Count(size / sizeof(unsigned int))
 	{
 		GLCALL(glGenBuffers(1, &m_RendererID));
 		GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
@@ -53,4 +94,7 @@ namespace FireFly
 	{
 		GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 	}
+
+
+
 }

@@ -10,14 +10,11 @@ namespace FireFly
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::None: 
-			FF_CORE_ERROR("API is not specified!");
-			return nullptr;
 		case RendererAPI::OpenGL:
 			return new OpenGLShader(vertexSRC, fragmentSRC);
 		}
 
-		FF_CORE_ERROR("Unknown API!");
+		FF_CORE_ASSERT(false, "Unknown API!");
 		return nullptr;
 	}
 

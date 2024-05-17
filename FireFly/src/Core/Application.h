@@ -8,8 +8,7 @@
 #include "ImGui/ImGuiLayer.h"
 
 // TEMP
-#include "Renderer/Shader.h"
-#include "Renderer/Buffer.h"
+#include "Renderer/VertexArray.h"
 //TEMP
 
 namespace FireFly 
@@ -46,10 +45,7 @@ namespace FireFly
 		LayerStack m_LayerStack;
 
 		// TEMP
-		Shader* shader;
-		VertexBuffer* vertexbuffer;
-		IndexBuffer* indexbuffer;
-		unsigned int  vertexarray;
+		VertexArray* vertexarray;
 		//TEMP
 	};
 

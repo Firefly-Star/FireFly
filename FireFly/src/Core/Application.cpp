@@ -1,7 +1,5 @@
 #include "ffpch.h"
 
-#include <glad/glad.h>
-
 #include "Application.h"
 #include "Platform/Windows/WindowsWindow.h"
 #include "Core/Events/Event.h"
@@ -11,7 +9,9 @@
 #include "Log.h"
 
 //TEMP
+#include <glad/glad.h>
 #include "Platform/OpenGL/OpenGLError.h"
+#include "Platform/OpenGL/OpenGLBuffer.h"
 //TEMP
 
 
@@ -50,11 +50,14 @@ namespace FireFly
 		std::string vs =R"(
 		#version 330 core
 
-		layout(location = 0) in vec3 a_Position;	
+		layout(location = 0) in vec3 a_Position;
+		layout(location = 1) in vec4 a_Color;
+		out vec4 v_Color;	
 		
 		void main()
 		{
 			gl_Position = vec4(a_Position, 1.0);
+			v_Color = a_Color;
 		}
 		)";
 
@@ -62,45 +65,49 @@ namespace FireFly
 		#version 330 core
 
 		layout(location = 0) out vec4 color;
+		in vec4 v_Color;
 		
 		void main()
 		{
-			color = vec4(0.8, 0.2, 0.3, 1.0);
+			color = v_Color;
 		}
 		)";
 
-		shader = Shader::Create(vs, fs);
-		shader->Bind();
+		vertexarray = VertexArray::Create();
+		vertexarray->Bind();
 
-		GLCALL(glGenVertexArrays(1, &vertexarray));
-		GLCALL(glBindVertexArray(vertexarray));
+		vertexarray->SetShader(vs, fs);
 
-		GLCALL(glEnableVertexAttribArray(0));
-		
-		
 		float vertices[] =
 		{
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.0f,  0.5f, 0.0f
+			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.2f, 1.0f,
+			 0.5f, -0.5f, 0.0f, 0.2f, 0.8f, 0.2f, 1.0f,
+			 0.0f,  0.5f, 0.0f, 0.2f, 0.2f, 0.8f, 1.0f
 		};
 		
-		vertexbuffer = VertexBuffer::Create(vertices, 9 * sizeof(float));
+		vertexarray->SetVertexBuffer(vertices, 21 * 4);
 		
-		GLCALL(glVertexAttribPointer(0, 3 , GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr));
+		BufferLayout* layout = vertexarray->GetBufferLayout();
+
+		layout->Push({ "Position", LayoutElementType::Float3 });
+		layout->Push({ "Color", LayoutElementType::Float4 });
 		
 		unsigned int indices[] =
 		{
 			0, 1, 2
 		};
 		
-		indexbuffer = IndexBuffer::Create(indices, 3 * sizeof(unsigned int));
+		vertexarray->SetIndexBuffer(indices, 3 * 4);
+
+		vertexarray->PreForRender();
 		//TEMP
 	}
 
 	Application::~Application()
 	{
-
+		//TEMP
+		delete vertexarray;
+		//TEMP
 	}
 
 	void Application::Run()
@@ -110,8 +117,7 @@ namespace FireFly
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			shader->Bind();
-			glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+			vertexarray->Render();
 
 			for (auto it : m_LayerStack.GetLayers())
 			{
