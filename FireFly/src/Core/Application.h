@@ -48,10 +48,6 @@ namespace FireFly
 
 		LayerStack m_LayerStack;
 
-		// TEMP
-		VertexArray* vertexarray;
-		OrthoCamera camera;
-		//TEMP
 	};
 
 	//To be defined in the CLIENT(Sandbox)
