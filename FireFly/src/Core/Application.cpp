@@ -39,25 +39,29 @@ namespace FireFly
 	}
 
 	Application::Application()
+		:camera({-1.0f, 1.0f, -1.0f, 1.0f})
 	{
 		WindowProp prop(1600, 960);
 		m_Window = Window::Create(prop);
 		m_Window->SetEventCallback(FF_BIND_EVENT_FN(Application::OnEvent));
 		void* window_ptr = m_Window->GetWindowHandle();
+		m_Input = Input::Create(window_ptr);
 		m_ImGuiLayer = new ImGuiLayer("ImGui", window_ptr);
 		m_ImGuiLayer->OnAttach();
 
 		//TEMP
-		std::string vs =R"(
+		std::string vs = R"(
 		#version 330 core
 
 		layout(location = 0) in vec3 a_Position;
 		layout(location = 1) in vec4 a_Color;
 		out vec4 v_Color;	
+
+		uniform mat4 u_PVmatrix;
 		
 		void main()
 		{
-			gl_Position = vec4(a_Position, 1.0);
+			gl_Position = u_PVmatrix * vec4(a_Position, 1.0);
 			v_Color = a_Color;
 		}
 		)";
@@ -117,19 +121,12 @@ namespace FireFly
 			RendererCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 			RendererCommand::ClearColor();
 
-			Renderer::BeginScene();
-			RendererCommand::DrawIndexed(vertexarray);
+			camera.SetRotation(90.0f);
 
+			Renderer::BeginScene(camera);
+			Renderer::Render(vertexarray);
 
-			for (auto it : m_LayerStack.GetLayers())
-			{
-				it->OnUpdate();
-			}
-
-			for (auto it : m_LayerStack.GetOverLayers())
-			{
-				it->OnUpdate();
-			}
+			m_LayerStack.OnUpdate();
 
 			m_ImGuiLayer->Begin();
 			m_ImGuiLayer->OnRender();

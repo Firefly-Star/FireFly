@@ -143,7 +143,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\OS\OSAPI.h" />
     <ClInclude Include="src\Core\Renderer\Buffer.h" />
+    <ClInclude Include="src\Core\Renderer\Camera.h" />
     <ClInclude Include="src\Core\Renderer\Renderer.h" />
     <ClInclude Include="src\Core\Renderer\Shader.h" />
     <ClInclude Include="src\Core\Renderer\VertexArray.h" />
@@ -592,7 +594,10 @@
     <ClInclude Include="vendor\GLM\glm-master\glm\vector_relational.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Input.cpp" />
+    <ClCompile Include="src\Core\OS\OSAPI.cpp" />
     <ClCompile Include="src\Core\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Core\Renderer\Camera.cpp" />
     <ClCompile Include="src\Core\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Core\Renderer\Shader.cpp" />
     <ClCompile Include="src\Core\Renderer\VertexArray.cpp" />

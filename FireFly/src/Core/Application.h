@@ -6,9 +6,11 @@
 #include "Window.h"
 #include "LayerStack.h"
 #include "ImGui/ImGuiLayer.h"
+#include "Input.h"
 
 // TEMP
 #include "Renderer/VertexArray.h"
+#include "Renderer/Camera.h"
 //TEMP
 
 namespace FireFly 
@@ -29,23 +31,26 @@ namespace FireFly
 		void PushLayer(Layer* layer);
 		void PushOverLayer(Layer* layer);
 		inline Window& GetWindow() { return *m_Window; }
+		const Input* GetInput() { return m_Input; }
 	protected:
 		Application();
 		virtual ~Application();
 	private:
-		Window* m_Window;
-		ImGuiLayer* m_ImGuiLayer;
-		bool m_Running = true;
-
 		bool OnEvent(Event& e);
 		bool OnClose(WindowCloseEvent& e);
-
+	private:
 		static Application* app;
+
+		Window* m_Window;
+		Input* m_Input;
+		ImGuiLayer* m_ImGuiLayer;
+		bool m_Running = true;
 
 		LayerStack m_LayerStack;
 
 		// TEMP
 		VertexArray* vertexarray;
+		OrthoCamera camera;
 		//TEMP
 	};
 

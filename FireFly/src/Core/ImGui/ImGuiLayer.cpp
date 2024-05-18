@@ -13,10 +13,11 @@
 
 namespace FireFly
 {
-	ImGuiLayer::ImGuiLayer(const std::string& name, void* window)
-		:Layer(name, window)
+	ImGuiLayer::ImGuiLayer(const std::string& name = "ImGui Layer", void* window = nullptr)
+		:Layer(name), m_Window(window)
 	{
 	}
+
 
 	ImGuiLayer::~ImGuiLayer()
 	{
@@ -92,9 +93,5 @@ namespace FireFly
 	{
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);
-
-		ImGui::Begin("Test");
-		ImGui::Text("12345");
-		ImGui::End();
 	}
 }

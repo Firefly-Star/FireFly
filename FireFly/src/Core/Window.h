@@ -2,7 +2,6 @@
 
 #include "Core.h"
 #include "Events/Event.h"
-#include "Core/Input.h"
 namespace FireFly
 {
 	struct WindowProp
@@ -36,8 +35,5 @@ namespace FireFly
 
 		static void Terminate();
 
-		inline const Input* GetInput() { return m_Input; }
-	protected:
-		Input* m_Input = nullptr;
 	};
 }

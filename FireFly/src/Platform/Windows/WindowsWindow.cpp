@@ -56,8 +56,6 @@ namespace FireFly
 			s_IsGLFWInitialized = true;
 		}
 
-		m_Input = new WindowsInput(m_Window);
-
 		m_Window = glfwCreateWindow(windowProp.m_Width, windowProp.m_Height, windowProp.m_Tittle.c_str(), nullptr, nullptr);
 		
 		m_Context = new OpenGLContext(m_Window);

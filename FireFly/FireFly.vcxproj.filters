@@ -1364,6 +1364,8 @@
     <ClInclude Include="src\Core\Renderer\VertexArray.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
+    <ClInclude Include="src\Core\Renderer\Camera.h" />
+    <ClInclude Include="src\Core\OS\OSAPI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -1396,5 +1398,8 @@
     <ClCompile Include="src\Core\Renderer\VertexArray.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
+    <ClCompile Include="src\Core\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Core\OS\OSAPI.cpp" />
+    <ClCompile Include="src\Core\Input.cpp" />
   </ItemGroup>
 </Project>

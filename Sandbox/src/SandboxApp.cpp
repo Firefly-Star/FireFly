@@ -3,22 +3,18 @@
 class ExampleLayer : public FireFly::Layer
 {
 public:
-	virtual bool OnEvent(FireFly::Event& e)
+	ExampleLayer(const std::string& name)
+		:Layer(name)
 	{
-		if (e.GetEventType() == FireFly::EventType::KeyPressed)
-		{
-			FireFly::KeyPressedEvent event = *(FireFly::KeyPressedEvent*)&e;
-			if (event.GetKeyCode() == FF_KEY_TAB)
-			{
-				FF_CLIENT_TRACE("Tab Pressed!");
-			}
-			else
-			{
-				FF_CLIENT_TRACE("{0} Pressed", (char)event.GetKeyCode());
-			}
-		}
 
-		return false;
+	}
+
+	virtual void OnUpdate()
+	{
+		if (FireFly::Application::GetInstance()->GetInput()->IsKeyPressed(FF_KEY_A))
+		{
+			FF_CLIENT_INFO("Key pressed: A");
+		}
 	}
 };
 
@@ -27,7 +23,7 @@ public:
 FireFly::Application* FireFly::CreateApplication()
 {
 	FireFly::Application* app = Application::GetInstance();
-	ExampleLayer* examplelayer = new ExampleLayer();
+	ExampleLayer* examplelayer = new ExampleLayer("Layer");
 	app->PushLayer(examplelayer);
 	return app;
 }

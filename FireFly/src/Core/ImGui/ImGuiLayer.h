@@ -5,13 +5,15 @@
 #include "Core/Events/KeyEvent.h"
 #include "Core/Events/MouseEvent.h"
 #include "Core/Events/WindowEvent.h"
+#include "Core/Input.h"
 
 namespace FireFly
 {
+
 	class ImGuiLayer : public Layer
 	{
 	public:
-		ImGuiLayer(const std::string& name = "ImGui Layer", void* window = nullptr);
+		ImGuiLayer(const std::string& name, void* window);
 		~ImGuiLayer();
 
 		virtual void OnRender() override;
@@ -21,5 +23,6 @@ namespace FireFly
 		void End();
 	private:
 		float m_Time = 0.0;
+		void* m_Window;
 	};
 }

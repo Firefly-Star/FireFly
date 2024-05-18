@@ -41,9 +41,9 @@ namespace FireFly
 		m_VertexBuffer = VertexBuffer::Create(vertices, size);
 	}
 
-	void VertexArray::SetVertexBuffer(const VertexBuffer& vertexbuffer)
+	void VertexArray::SetVertexBuffer(VertexBuffer* vertexbuffer)
 	{
-		m_VertexBuffer = &vertexbuffer;
+		m_VertexBuffer = vertexbuffer;
 	}
 	
 	void VertexArray::SetIndexBuffer(unsigned int* indices, unsigned int size)
@@ -51,9 +51,9 @@ namespace FireFly
 		m_IndexBuffer = IndexBuffer::Create(indices, size);
 	}
 
-	void VertexArray::SetIndexBuffer(const IndexBuffer& indexbuffer)
+	void VertexArray::SetIndexBuffer(IndexBuffer* indexbuffer)
 	{
-		m_IndexBuffer = &indexbuffer;
+		m_IndexBuffer = indexbuffer;
 	}
 	
 	void VertexArray::SetShader(const std::string& vsrc, const std::string& fsrc)
@@ -61,9 +61,9 @@ namespace FireFly
 		m_Shader = Shader::Create(vsrc, fsrc);
 	}
 
-	void VertexArray::SetShader(const Shader& shader)
+	void VertexArray::SetShader(Shader* shader)
 	{
-		m_Shader = &shader;
+		m_Shader = shader;
 	}
 	
 	void VertexArray::SetBufferLayout(BufferLayout& layout)

@@ -12,6 +12,7 @@
 #include "Core/Input.h"
 #include "Core/KeyCode.h"
 #include "Core/MousebuttonCode.h"
+#include "Core/Window.h"
 
 
 

@@ -14,10 +14,19 @@ namespace FireFly
 	{
 		GLCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	}
-	
-	void OpenGLRendererAPI::DrawIndexed(const VertexArray* vertexarray)
+
+	void OpenGLRendererAPI::PreForRender(const VertexArray* vertexarray)
 	{
 		vertexarray->PreForRender();
+	}
+	
+	void OpenGLRendererAPI::UploadUniform(const VertexArray* vertexarray, const glm::mat4& mat, const std::string name)
+	{
+		vertexarray->GetShader()->UploadUniform(mat, name);
+	}
+
+	void OpenGLRendererAPI::DrawIndexed(const VertexArray* vertexarray)
+	{
 		vertexarray->Render();
 	}
 }

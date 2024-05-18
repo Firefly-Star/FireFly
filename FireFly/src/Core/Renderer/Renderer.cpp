@@ -21,8 +21,16 @@ namespace FireFly
 	}
 
 	//--------Renderer-------------
+
+	Renderer::SceneData Renderer::s_SceneData = { glm::mat4(1.0f) };
+
 	void Renderer::BeginScene()
 	{
+	}
+
+	void Renderer::BeginScene(const OrthoCamera& camera)
+	{
+		s_SceneData.PVmatrix = camera.GetPVmatrix();
 	}
 
 	void Renderer::EndScene()
@@ -31,6 +39,12 @@ namespace FireFly
 
 	void Renderer::Render(const VertexArray* vertexarray)
 	{
+		RendererCommand::PreForRender(vertexarray);
+
+		RendererCommand::Upload(vertexarray, s_SceneData);
+
+
+
 		RendererCommand::DrawIndexed(vertexarray);
 	}
 
@@ -45,6 +59,16 @@ namespace FireFly
 	void RendererCommand::ClearColor()
 	{
 		s_RendererAPI->ClearColor();
+	}
+
+	void RendererCommand::PreForRender(const VertexArray* vertexarray)
+	{
+		s_RendererAPI->PreForRender(vertexarray);
+	}
+
+	void RendererCommand::Upload(const VertexArray* vertexarray, const Renderer::SceneData& scenedata)
+	{
+		s_RendererAPI->UploadUniform(vertexarray, scenedata.PVmatrix, "u_PVmatrix");
 	}
 
 	void RendererCommand::DrawIndexed(const VertexArray* vertexarray)

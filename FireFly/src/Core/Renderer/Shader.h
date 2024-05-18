@@ -1,5 +1,7 @@
 #pragma once
 
+#include "glm/glm.hpp"
+
 namespace FireFly
 {
 	enum class ShaderType
@@ -17,8 +19,10 @@ namespace FireFly
 
 		static void ParseFile(const std::string& filepath, ShaderType targetType, std::pair<ShaderType, std::string>& shaderSRC);
 
-		void virtual Bind() const = 0;
-		void virtual UnBind() const = 0;
+		virtual void Bind() const = 0;
+		virtual void UnBind() const = 0;
+
+		virtual void UploadUniform(const glm::mat4& mat, const std::string& name) = 0;
 	};
 
 }
