@@ -74,8 +74,10 @@ namespace FireFly
 	void ImGuiLayer::End()
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		Application* app = Application::GetInstance();
-		io.DisplaySize = ImVec2((float)app->GetWindow().GetWidth(), (float)app->GetWindow().GetHeight());
+		GLFWwindow* window = (GLFWwindow*)m_Window;
+		int width, height;
+		glfwGetWindowSize(window, &width, &height);
+		io.DisplaySize = ImVec2((float)width, (float)height);
 
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -89,7 +91,7 @@ namespace FireFly
 		}
 	}
 
-	void ImGuiLayer::OnRender()
+	void ImGuiLayer::OnImGuiRender()
 	{
 		static bool show = true;
 		ImGui::ShowDemoWindow(&show);

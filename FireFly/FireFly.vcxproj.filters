@@ -1366,6 +1366,8 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
     <ClInclude Include="src\Core\Renderer\Camera.h" />
     <ClInclude Include="src\Core\OS\OSAPI.h" />
+    <ClInclude Include="src\Core\TimeStep.h" />
+    <ClInclude Include="src\Platform\Windows\WindowsTimeStep.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
@@ -1401,5 +1403,7 @@
     <ClCompile Include="src\Core\Renderer\Camera.cpp" />
     <ClCompile Include="src\Core\OS\OSAPI.cpp" />
     <ClCompile Include="src\Core\Input.cpp" />
+    <ClCompile Include="src\Core\TimeStep.cpp" />
+    <ClCompile Include="src\Platform\Windows\WindowsTimeStep.cpp" />
   </ItemGroup>
 </Project>

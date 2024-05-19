@@ -49,7 +49,7 @@ namespace FireFly
 	}
 
 	//----------RendererCommand------
-	RendererAPI* RendererCommand::s_RendererAPI = RendererAPI::Create();
+	Ref<RendererAPI> RendererCommand::s_RendererAPI = std::shared_ptr<RendererAPI>(RendererAPI::Create());
 
 	void RendererCommand::SetClearColor(glm::vec4 color)
 	{

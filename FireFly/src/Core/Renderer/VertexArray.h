@@ -25,19 +25,19 @@ namespace FireFly
 		virtual void SetShader(const std::string& vsrc, const std::string& fsrc);
 		virtual void SetShader(Shader* shader);
 		
-		virtual void SetBufferLayout(BufferLayout& layout);
+		virtual void SetBufferLayout(BufferLayout* layout);
 
-		inline Shader* GetShader() const { return m_Shader; }
-		inline BufferLayout* GetBufferLayout() const { return m_BufferLayout; }
+		inline Shader* GetShader() const { return m_Shader.get(); }
+		inline BufferLayout* GetBufferLayout() const { return m_BufferLayout.get(); }
 
 		virtual void PreForRender() const = 0;
 
 		virtual void Render() const = 0;
 	protected:
-		VertexBuffer* m_VertexBuffer;
-		IndexBuffer* m_IndexBuffer;
-		BufferLayout* m_BufferLayout;
-		Shader* m_Shader;
+		Ref<VertexBuffer> m_VertexBuffer;
+		Ref<IndexBuffer> m_IndexBuffer;
+		Ref<BufferLayout> m_BufferLayout;
+		Ref<Shader> m_Shader;
 
 		unsigned int m_ID;
 

@@ -8,46 +8,35 @@
 #include "ImGui/ImGuiLayer.h"
 #include "Input.h"
 
-// TEMP
-#include "Renderer/VertexArray.h"
-#include "Renderer/Camera.h"
-//TEMP
+#include "TimeStep.h"
 
 namespace FireFly 
 {
 	class Application
 	{
 	public:
-		static Application* GetInstance();
-
-		static void ReleaseInstance();
-
-		Application(const Application&) = delete;
-
-		Application& operator=(const Application&) = delete;
+		Application();
+		virtual ~Application();
 
 		void Run();
 
 		void PushLayer(Layer* layer);
 		void PushOverLayer(Layer* layer);
-		inline Window& GetWindow() { return *m_Window; }
-		const Input* GetInput() { return m_Input; }
-	protected:
-		Application();
-		virtual ~Application();
+		inline const Window* GetWindow() { return m_Window.get(); }
+		inline const Input* GetInput() { return m_Input.get(); }
+		inline const TimeStep* GetTimeStep() { return m_TimeStep.get(); }
 	private:
 		bool OnEvent(Event& e);
 		bool OnClose(WindowCloseEvent& e);
 	private:
-		static Application* app;
-
-		Window* m_Window;
-		Input* m_Input;
-		ImGuiLayer* m_ImGuiLayer;
+		Ref<Window> m_Window;
+		Ref<Input> m_Input;
+		Ref<ImGuiLayer> m_ImGuiLayer;
 		bool m_Running = true;
 
 		LayerStack m_LayerStack;
 
+		Ref<TimeStep> m_TimeStep;
 	};
 
 	//To be defined in the CLIENT(Sandbox)

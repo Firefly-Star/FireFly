@@ -38,15 +38,5 @@ namespace FireFly
 		GraphicContext* m_Context;
 	};
 
-	/*class WindowsWindowLayer : Layer
-	{
-	public:
-		WindowsWindowLayer(const std::string name = "Windows Window Layer");
-		~WindowsWindowLayer();
 
-		void OnUpdate();
-		bool OnEvent(Event& e);
-		void OnAttach();
-		void OnDettach();
-	};*/
 }

@@ -16,7 +16,7 @@ namespace FireFly
 		ImGuiLayer(const std::string& name, void* window);
 		~ImGuiLayer();
 
-		virtual void OnRender() override;
+		virtual void OnImGuiRender() override;
 		virtual void OnAttach() override;
 		virtual void OnDettach() override;
 		void Begin();

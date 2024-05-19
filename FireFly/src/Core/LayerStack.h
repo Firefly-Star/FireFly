@@ -21,11 +21,12 @@ namespace FireFly
 
 		bool OnEvent(Event& e);
 		void OnUpdate();
+		void OnImGuiRender();
 
-		inline const std::vector<Layer*>& GetLayers() { return m_Layers; }
-		inline const std::vector<Layer*>& GetOverLayers() { return m_OverLayers; }
+		inline const std::vector<Ref<Layer>>& GetLayers() { return m_Layers; }
+		inline const std::vector<Ref<Layer>>& GetOverLayers() { return m_OverLayers; }
 	private:
-		std::vector<Layer*> m_Layers;
-		std::vector<Layer*> m_OverLayers;
+		std::vector<Ref<Layer>> m_Layers;
+		std::vector<Ref<Layer>> m_OverLayers;
 	};
 }

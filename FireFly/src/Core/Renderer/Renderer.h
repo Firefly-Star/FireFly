@@ -67,6 +67,6 @@ namespace FireFly
 
 		static void DrawIndexed(const VertexArray* vertexarray);
 	private:
-		static RendererAPI* s_RendererAPI;
+		static Ref<RendererAPI> s_RendererAPI;
 	};
 }

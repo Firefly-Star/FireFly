@@ -17,7 +17,7 @@ namespace FireFly
 		virtual void OnAttach(){}
 		virtual void OnDettach(){}
 		virtual void OnUpdate(){}//		每一帧都会调用的函数，可以与Input类（轮询系统）联动来更新
-		virtual void OnRender() {}//	目前是ImGuiLayer专用的渲染函数，也许别的层级也能用
+		virtual void OnImGuiRender() {}//	目前是ImGui专用的渲染函数，用来创建每一层自带的GUI
 		virtual bool OnEvent(Event& e) { return e.IsHandled(); }//	对事件的响应，与Event类联动作出响应
 	protected:
 		std::string m_Name;

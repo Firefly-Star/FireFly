@@ -10,43 +10,21 @@
 
 
 #include "Renderer/Renderer.h"
-//TEMP
-#include "Platform/OpenGL/OpenGLError.h"
-#include "Platform/OpenGL/OpenGLBuffer.h"
-//TEMP
 
 
 namespace FireFly
 {
-	Application* Application::app = nullptr;
-
-	Application* Application::GetInstance()
-	{
-		if (!app)
-		{
-			app = new Application();
-		}
-		return app;
-	}
-
-	void Application::ReleaseInstance()
-	{
-		if (app)
-		{
-			delete app;
-			app = nullptr;
-		}
-	}
-
 	Application::Application()
 	{
 		WindowProp prop(1600, 960);
-		m_Window = Window::Create(prop);
+		m_Window.reset(Window::Create(prop));
 		m_Window->SetEventCallback(FF_BIND_EVENT_FN(Application::OnEvent));
 		void* window_ptr = m_Window->GetWindowHandle();
-		m_Input = Input::Create(window_ptr);
-		m_ImGuiLayer = new ImGuiLayer("ImGui", window_ptr);
+		m_Input.reset(Input::Create(window_ptr));
+		m_ImGuiLayer = std::make_shared<ImGuiLayer>("ImGui", window_ptr);
 		m_ImGuiLayer->OnAttach();
+
+		m_TimeStep.reset(TimeStep::Create());
 	}
 
 	Application::~Application()
@@ -60,10 +38,13 @@ namespace FireFly
 			m_LayerStack.OnUpdate();
 
 			m_ImGuiLayer->Begin();
-			m_ImGuiLayer->OnRender();
+			m_LayerStack.OnImGuiRender();
+			m_ImGuiLayer->OnImGuiRender();
 			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
+
+			m_TimeStep->OnUpdate();
 		}
 	}
 

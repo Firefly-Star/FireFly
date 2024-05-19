@@ -1,10 +1,12 @@
 #include <FireFly.h>
 
+#include "../../FireFly/vendor/ImGui/imgui.h"
+
 class ExampleLayer : public FireFly::Layer
 {
 public:
-	ExampleLayer(const std::string& name)
-		:Layer(name), camera({-1.0f, 1.0f, -1.0f, 1.0f})
+	ExampleLayer(const std::string& name, FireFly::Application* App)
+		:Layer(name), camera({-1.0f, 1.0f, -0.6f, 0.6f}), color(0.8f, 0.3f, 0.2f), app(App)
 	{
 		std::string vs = R"(
 		#version 330 core
@@ -68,31 +70,70 @@ public:
 
 	virtual void OnUpdate()
 	{
-		if (FireFly::Application::GetInstance()->GetInput()->IsKeyPressed(FF_KEY_A))
+		float deltaTime = app->GetTimeStep()->GetDeltaTime();
+
+		if (app->GetInput()->IsKeyPressed(FF_KEY_UP))
 		{
-			FF_CLIENT_INFO("Key pressed: A");
+			cameraPosition.y += CameraMoveSpeed * deltaTime;
+		}
+		else if (app->GetInput()->IsKeyPressed(FF_KEY_DOWN))
+		{
+			cameraPosition.y -= CameraMoveSpeed * deltaTime;
+		}
+		if (app->GetInput()->IsKeyPressed(FF_KEY_LEFT))
+		{
+			cameraPosition.x -= CameraMoveSpeed * deltaTime;
+		}
+		else if (app->GetInput()->IsKeyPressed(FF_KEY_RIGHT))
+		{
+			cameraPosition.x += CameraMoveSpeed * deltaTime;
+		}
+		
+		if (app->GetInput()->IsKeyPressed(FF_KEY_A))
+		{
+			cameraRotation -= CameraRotateSpeed * deltaTime;
+		}
+		else if (app->GetInput()->IsKeyPressed(FF_KEY_D))
+		{
+			cameraRotation += CameraRotateSpeed * deltaTime;
 		}
 
 
-		FireFly::RendererCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+		FireFly::RendererCommand::SetClearColor({color, 1.0f });
 		FireFly::RendererCommand::ClearColor();
 
-		camera.SetRotation(90.0f);
+		camera.SetPosition(cameraPosition);
+		camera.SetRotation(cameraRotation);
 
 		FireFly::Renderer::BeginScene(camera);
 		FireFly::Renderer::Render(vertexarray);
+		FireFly::Renderer::EndScene();
+	}
+
+	virtual void OnImGuiRender()
+	{
+		ImGui::Begin("Settings");
+		ImGui::ColorPicker3("Color", &color.x);
+		ImGui::End();
 	}
 private:
+	FireFly::Application* app;
+
 	FireFly::VertexArray* vertexarray;
 	FireFly::OrthoCamera camera;
-};
+	glm::vec3 cameraPosition = {0.0f, 0.0f, 0.0f};
+	float cameraRotation = 0.0f;
+	float CameraMoveSpeed = 0.5f;
+	float CameraRotateSpeed = 30.0f;
 
+	glm::vec3 color;
+};
 
 
 FireFly::Application* FireFly::CreateApplication()
 {
-	FireFly::Application* app = Application::GetInstance();
-	ExampleLayer* examplelayer = new ExampleLayer("Layer");
+	auto app = new FireFly::Application();
+	ExampleLayer* examplelayer = new ExampleLayer("Layer", app);
 	app->PushLayer(examplelayer);
 	return app;
 }

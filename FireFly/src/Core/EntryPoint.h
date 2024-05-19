@@ -9,7 +9,6 @@ int main(int argc, char** argv)
 	DEBUG_ONLY(FF_CORE_DEBUG("Configuration: Debug");)
 	auto app = FireFly::CreateApplication();
 	app->Run();
-	app->ReleaseInstance();
 }
 
 #endif

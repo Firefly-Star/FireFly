@@ -11,52 +11,43 @@ namespace FireFly
 
 	LayerStack::~LayerStack()
 	{
-		for (auto layer : m_Layers)
-		{
-			delete layer;
-			layer = nullptr;
-		}
 
-		for (auto layer : m_OverLayers)
-		{
-			delete layer;
-			layer = nullptr;
-		}
 	}
 
 	void LayerStack::PushLayer(Layer* layer)
 	{
-		m_Layers.emplace_back(layer);
+		m_Layers.emplace_back(std::shared_ptr<Layer>(layer));
 	}
 
 	void LayerStack::PushOverLayer(Layer* layer)
 	{
-		m_OverLayers.emplace_back(layer);
+		m_OverLayers.emplace_back(std::shared_ptr<Layer>(layer));
 	}
 
 	bool LayerStack::EraseLayer(Layer* layer)
 	{
-		for (auto it = m_Layers.end(); it != m_Layers.begin();)
-		{
-			if (*(--it) == layer)
+		auto it = std::find_if(m_Layers.begin(), m_Layers.end(), [layer](std::shared_ptr<Layer> l)
 			{
-				m_Layers.erase(it);
-				return true;
-			}
+				return l.get() == layer;
+			});
+		if (it != m_Layers.end())
+		{
+			m_Layers.erase(it);
+			return true;
 		}
 		return false;
 	}
 
 	bool LayerStack::EraseOverLayer(Layer* layer)
 	{
-		for (auto it = m_OverLayers.end(); it != m_OverLayers.begin();)
-		{
-			if (*(--it) == layer)
+		auto it = std::find_if(m_OverLayers.begin(), m_OverLayers.end(), [layer](std::shared_ptr<Layer> l)
 			{
-				delete* (it);
-				m_OverLayers.erase(it);
-				return true;
-			}
+				return l.get() == layer;
+			});
+		if (it != m_OverLayers.end())
+		{
+			m_OverLayers.erase(it);
+			return true;
 		}
 		return false;
 	}
@@ -85,6 +76,19 @@ namespace FireFly
 		for (auto it = m_Layers.end(); it != m_Layers.begin();)
 		{
 			(*--it)->OnUpdate();
+		}
+	}
+
+	void LayerStack::OnImGuiRender()
+	{
+		for (auto it = m_OverLayers.end(); it != m_OverLayers.begin();)
+		{
+			(*--it)->OnImGuiRender();
+		}
+
+		for (auto it = m_Layers.end(); it != m_Layers.begin();)
+		{
+			(*--it)->OnImGuiRender();
 		}
 	}
 }

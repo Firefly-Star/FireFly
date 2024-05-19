@@ -13,15 +13,11 @@ namespace FireFly
 	VertexArray::VertexArray()
 		:m_VertexBuffer(nullptr), m_IndexBuffer(nullptr), m_Shader(nullptr), m_BufferLayout(nullptr), m_ID(++ s_Count)
 	{
-		m_BufferLayout = BufferLayout::Create();
+		m_BufferLayout = std::shared_ptr<BufferLayout>(BufferLayout::Create());
 	}
 
 	VertexArray::~VertexArray()
 	{
-		delete m_BufferLayout;
-		delete m_IndexBuffer;
-		delete m_Shader;
-		delete m_VertexBuffer;
 	}
 
 	VertexArray* VertexArray::Create()
@@ -38,36 +34,36 @@ namespace FireFly
 
 	void VertexArray::SetVertexBuffer(float* vertices, unsigned int size)
 	{
-		m_VertexBuffer = VertexBuffer::Create(vertices, size);
+		m_VertexBuffer = std::shared_ptr<VertexBuffer>(VertexBuffer::Create(vertices, size));
 	}
 
 	void VertexArray::SetVertexBuffer(VertexBuffer* vertexbuffer)
 	{
-		m_VertexBuffer = vertexbuffer;
+		m_VertexBuffer = std::shared_ptr<VertexBuffer>(vertexbuffer);
 	}
 	
 	void VertexArray::SetIndexBuffer(unsigned int* indices, unsigned int size)
 	{
-		m_IndexBuffer = IndexBuffer::Create(indices, size);
+		m_IndexBuffer = std::shared_ptr<IndexBuffer>(IndexBuffer::Create(indices, size));
 	}
 
 	void VertexArray::SetIndexBuffer(IndexBuffer* indexbuffer)
 	{
-		m_IndexBuffer = indexbuffer;
+		m_IndexBuffer = std::shared_ptr<IndexBuffer>(indexbuffer);
 	}
 	
 	void VertexArray::SetShader(const std::string& vsrc, const std::string& fsrc)
 	{
-		m_Shader = Shader::Create(vsrc, fsrc);
+		m_Shader = std::shared_ptr<Shader>(Shader::Create(vsrc, fsrc));
 	}
 
 	void VertexArray::SetShader(Shader* shader)
 	{
-		m_Shader = shader;
+		m_Shader = std::shared_ptr<Shader>(shader);
 	}
 	
-	void VertexArray::SetBufferLayout(BufferLayout& layout)
+	void VertexArray::SetBufferLayout(BufferLayout* layout)
 	{
-		m_BufferLayout = &layout;
+		m_BufferLayout = std::shared_ptr<BufferLayout>(layout);
 	}
 }
