@@ -117,4 +117,27 @@ namespace FireFly
 
 		GLCALL(glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]));
 	}
+
+	void OpenGLShader::UploadUniform(int i, const std::string& name)
+	{
+		int location;
+		auto it = m_UniformLocationMap.find(name);
+
+		if (it != m_UniformLocationMap.end())
+		{
+			location = it->second;
+		}
+		else
+		{
+			GLCALL(location = glGetUniformLocation(m_RendererID, name.c_str()));
+			if (location == -1)
+			{
+				FF_CORE_WARN("Failed to locate the Uniform \"{0}\"!", name);
+				return;
+			}
+			m_UniformLocationMap[name] = location;
+		}
+
+		GLCALL(glUniform1i(location, i));
+	}
 }

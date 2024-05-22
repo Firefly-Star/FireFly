@@ -37,6 +37,11 @@ namespace FireFly
 	{
 	}
 
+	void Renderer::Init()
+	{
+		RendererCommand::Init();
+	}
+
 	void Renderer::Render(const VertexArray* vertexarray)
 	{
 		RendererCommand::PreForRender(vertexarray);
@@ -59,6 +64,11 @@ namespace FireFly
 	void RendererCommand::ClearColor()
 	{
 		s_RendererAPI->ClearColor();
+	}
+
+	void RendererCommand::Init()
+	{
+		s_RendererAPI->Init();
 	}
 
 	void RendererCommand::PreForRender(const VertexArray* vertexarray)

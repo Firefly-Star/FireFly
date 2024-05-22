@@ -21,6 +21,7 @@ namespace FireFly
 
 		virtual void SetClearColor(glm::vec4 color) = 0;
 		virtual void ClearColor() = 0;
+		virtual void Init() = 0;
 
 		virtual void PreForRender(const VertexArray* vertexarray) = 0;
 
@@ -47,6 +48,8 @@ namespace FireFly
 		static void BeginScene(const OrthoCamera& camera);
 		static void EndScene();
 
+		static void Init();
+
 		static void Render(const VertexArray* vertexarray);
 
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
@@ -60,6 +63,7 @@ namespace FireFly
 	public:
 		static void SetClearColor(glm::vec4 color);
 		static void ClearColor();
+		static void Init();
 
 		static void PreForRender(const VertexArray* vertexarray);
 

@@ -23,6 +23,7 @@ namespace FireFly
 		virtual void UnBind() const = 0;
 
 		virtual void UploadUniform(const glm::mat4& mat, const std::string& name) = 0;
+		virtual void UploadUniform(int i, const std::string& name) = 0;
 	};
 
 }

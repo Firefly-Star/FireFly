@@ -12,15 +12,15 @@ public:
 		#version 330 core
 
 		layout(location = 0) in vec3 a_Position;
-		layout(location = 1) in vec4 a_Color;
-		out vec4 v_Color;	
+		layout(location = 1) in vec2 a_TexCoord;
+		out vec2 v_TexCoord;	
 
 		uniform mat4 u_PVmatrix;
 		
 		void main()
 		{
 			gl_Position = u_PVmatrix * vec4(a_Position, 1.0);
-			v_Color = a_Color;
+			v_TexCoord = a_TexCoord;
 		}
 		)";
 
@@ -28,39 +28,50 @@ public:
 		#version 330 core
 
 		layout(location = 0) out vec4 color;
-		in vec4 v_Color;
+		in vec2 v_TexCoord;
+
+		uniform sampler2D u_Texture;
 		
 		void main()
 		{
-			color = v_Color;
+			color = texture(u_Texture, v_TexCoord);
 		}
 		)";
 
 		vertexarray = FireFly::VertexArray::Create();
 		vertexarray->Bind();
 
+		texture = FireFly::Texture2D::Create("C:/Users/Summer/Desktop/Game_Engine/FireFly/Sandbox/assets/Texture/Robin.jpg");
+		texture->Bind();
+
 		vertexarray->SetShader(vs, fs);
+		FireFly::Shader* shader = vertexarray->GetShader();
+		shader->Bind();
+		shader->UploadUniform(0, "u_Texture");
+
 
 		float vertices[] =
 		{
-			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.2f, 1.0f,
-			 0.5f, -0.5f, 0.0f, 0.2f, 0.8f, 0.2f, 1.0f,
-			 0.0f,  0.5f, 0.0f, 0.2f, 0.2f, 0.8f, 1.0f
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
-
-		vertexarray->SetVertexBuffer(vertices, 21 * 4);
+		
+		vertexarray->SetVertexBuffer(vertices, 20 * sizeof(float));
 
 		FireFly::BufferLayout* layout = vertexarray->GetBufferLayout();
 
 		layout->Push({ "Position", FireFly::LayoutElementType::Float3 });
-		layout->Push({ "Color", FireFly::LayoutElementType::Float4 });
+		layout->Push({ "Tex_Coord", FireFly::LayoutElementType::Float2 });
 
 		unsigned int indices[] =
 		{
-			0, 1, 2
+			0, 1, 2,
+			2, 3, 0
 		};
 
-		vertexarray->SetIndexBuffer(indices, 3 * 4);
+		vertexarray->SetIndexBuffer(indices, 6 * 4);
 	}
 
 	virtual ~ExampleLayer()
@@ -106,6 +117,7 @@ public:
 		camera.SetRotation(cameraRotation);
 
 		FireFly::Renderer::BeginScene(camera);
+
 		FireFly::Renderer::Render(vertexarray);
 		FireFly::Renderer::EndScene();
 	}
@@ -125,6 +137,8 @@ private:
 	float cameraRotation = 0.0f;
 	float CameraMoveSpeed = 0.5f;
 	float CameraRotateSpeed = 30.0f;
+
+	FireFly::Texture2D* texture;
 
 	glm::vec3 color;
 };

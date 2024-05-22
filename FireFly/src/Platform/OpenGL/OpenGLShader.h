@@ -13,6 +13,7 @@ namespace FireFly
 		virtual void UnBind() const override;
 
 		virtual void UploadUniform(const glm::mat4& mat, const std::string& name) override;
+		virtual void UploadUniform(int i, const std::string& name) override;
 	private:
 		unsigned int m_RendererID;
 		std::unordered_map<std::string, int> m_UniformLocationMap;

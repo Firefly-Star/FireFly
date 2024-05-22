@@ -23,6 +23,7 @@
 #include "Core/Renderer/Camera.h"
 #include "Core/Renderer/Renderer.h"
 #include "Core/Renderer/VertexArray.h"
+#include "Core/Renderer/Texture.h"
 
 //TimeStep
 #include "Core/TimeStep.h"

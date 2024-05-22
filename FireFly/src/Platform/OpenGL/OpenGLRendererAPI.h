@@ -8,6 +8,7 @@ namespace FireFly
 	{
 		virtual void SetClearColor(glm::vec4 color) override;
 		virtual void ClearColor() override;
+		virtual void Init() override;
 
 		virtual void PreForRender(const VertexArray* vertexarray) override;
 

@@ -14,6 +14,7 @@ workspace "FireFly"
 	IncludeDir["Glad"] = "FireFly/vendor/Glad/include"
 	IncludeDir["ImGui"] = "FireFly/vendor/ImGui"
 	IncludeDir["GLM"] = "FireFly/vendor/GLM/glm-master"
+	IncludeDir["stb"] = "FireFly/vendor"
 
 	include "FireFly/vendor/GLFW/src/glfw-3.4"
 	include "FireFly/vendor/Glad"
@@ -40,7 +41,9 @@ workspace "FireFly"
 			"%{prj.name}/src/**.h",
 			"%{prj.name}/src/**.cpp",
 			"%{prj.name}/vendor/GLM/glm-master/glm/**.hpp",
-			"%{prj.name}/vendor/GLM/glm-master/glm/**.inl"
+			"%{prj.name}/vendor/GLM/glm-master/glm/**.inl",
+			"%{prj.name}/vendor/stb_image/*.cpp",
+			"%{prj.name}/vendor/stb_image/*.h"
 		}
 
 		includedirs
@@ -51,7 +54,8 @@ workspace "FireFly"
 			"%{IncludeDir.Glad}",
 			"%{IncludeDir.ImGui}",
 			"%{IncludeDir.ImGui}/backends",
-			"%{IncludeDir.GLM}"
+			"%{IncludeDir.GLM}",
+			"%{IncludeDir.stb}"
 		}
 
 		links
