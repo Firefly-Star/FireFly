@@ -8,43 +8,13 @@ public:
 	ExampleLayer(const std::string& name, FireFly::Application* App)
 		:Layer(name), camera({-1.0f, 1.0f, -0.6f, 0.6f}), color(0.8f, 0.3f, 0.2f), app(App)
 	{
-		std::string vs = R"(
-		#version 330 core
-
-		layout(location = 0) in vec3 a_Position;
-		layout(location = 1) in vec2 a_TexCoord;
-		out vec2 v_TexCoord;	
-
-		uniform mat4 u_PVmatrix;
-		
-		void main()
-		{
-			gl_Position = u_PVmatrix * vec4(a_Position, 1.0);
-			v_TexCoord = a_TexCoord;
-		}
-		)";
-
-		std::string fs = R"(
-		#version 330 core
-
-		layout(location = 0) out vec4 color;
-		in vec2 v_TexCoord;
-
-		uniform sampler2D u_Texture;
-		
-		void main()
-		{
-			color = texture(u_Texture, v_TexCoord);
-		}
-		)";
-
 		vertexarray = FireFly::VertexArray::Create();
 		vertexarray->Bind();
 
 		texture = FireFly::Texture2D::Create("C:/Users/Summer/Desktop/Game_Engine/FireFly/Sandbox/assets/Texture/Robin.jpg");
 		texture->Bind();
 
-		vertexarray->SetShader(vs, fs);
+		vertexarray->SetShader("C:/Users/Summer/Desktop/Game_Engine/FireFly/Sandbox/assets/Shaders/BasicShader.glsl");
 		FireFly::Shader* shader = vertexarray->GetShader();
 		shader->Bind();
 		shader->UploadUniform(0, "u_Texture");

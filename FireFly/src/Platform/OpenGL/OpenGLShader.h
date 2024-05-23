@@ -7,6 +7,7 @@ namespace FireFly
 	{
 	public:
 		OpenGLShader(const std::string& vertexSRC, const std::string& fragmentSRC);
+		OpenGLShader(const std::string& filepath);
 		~OpenGLShader();
 
 		virtual void Bind() const override;
@@ -14,6 +15,10 @@ namespace FireFly
 
 		virtual void UploadUniform(const glm::mat4& mat, const std::string& name) override;
 		virtual void UploadUniform(int i, const std::string& name) override;
+	private:
+		unsigned int ShaderTypeToOpenGLenum(ShaderType type);
+		std::unordered_map<ShaderType, unsigned int> Compile(std::unordered_map<ShaderType, std::string>& sourceFile);
+		void Attach(std::unordered_map<ShaderType, unsigned int>& shaderIDs);
 	private:
 		unsigned int m_RendererID;
 		std::unordered_map<std::string, int> m_UniformLocationMap;

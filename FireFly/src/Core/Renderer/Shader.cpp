@@ -18,10 +18,24 @@ namespace FireFly
 		return nullptr;
 	}
 
-	void Shader::ParseFile(const std::string& filepath, ShaderType targetType, std::pair<ShaderType, std::string>& shaderSRC)
+	Shader* Shader::Create(const std::string& filepath)
+	{
+		switch (RendererAPI::GetAPI())
+		{
+		case RendererAPI::API::OpenGL:
+			return new OpenGLShader(filepath);
+		}
+
+		FF_CORE_ASSERT(false, "Unknown API!");
+		return nullptr;
+	}
+
+	//--------HelperFunc--------
+	std::unordered_map<Shader::ShaderType, std::string> Shader::ParseFile(const std::string& filepath)
 	{
 		std::fstream file(filepath);
-		std::stringstream ss;
+		std::unordered_map<Shader::ShaderType, std::stringstream> ss;
+		std::unordered_map<Shader::ShaderType, std::string> result;
 
 		std::string line;
 		ShaderType type = ShaderType::None;
@@ -33,26 +47,36 @@ namespace FireFly
 
 		while (std::getline(file, line))
 		{
-			if (line.find("#shader") != std::string::npos)
+			if (line.find("#type") != std::string::npos)
 			{
-				if (line.find("#shader vertex") != std::string::npos)
+				if (line.find("vertex") != std::string::npos)
 				{
 					type = ShaderType::VertexShaderSRC;
 				}
-				if (line.find("#shader fragment") != std::string::npos)
+				else if (line.find("fragment") != std::string::npos)
 				{
 					type = ShaderType::FragmentShaderSRC;
+				}
+				else
+				{
+					FF_CORE_WARN("Unknown Shader type: {0}!", line);
 				}
 			}
 			else
 			{
-				ss << line << "\n";
+				ss[type] << line << "\n";
+			}
+		}
+		for (auto it = ss.begin(); it != ss.end(); it++)
+		{
+			if (it->first != Shader::ShaderType::None)
+			{
+				result[it->first] = ss[it->first].str();
 			}
 		}
 
-		FF_CORE_ASSERT(type == targetType, "Wrong Type!")
+		FF_CORE_ASSERT(!result.empty(), "Shader type not found!");
 
-			shaderSRC.first = type;
-		shaderSRC.second = ss.str();
+		return result;
 	}
 }

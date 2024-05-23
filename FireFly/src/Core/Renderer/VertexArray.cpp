@@ -57,6 +57,11 @@ namespace FireFly
 		m_Shader = std::shared_ptr<Shader>(Shader::Create(vsrc, fsrc));
 	}
 
+	void VertexArray::SetShader(const std::string& filepath)
+	{
+		m_Shader = std::shared_ptr<Shader>(Shader::Create(filepath));
+	}
+
 	void VertexArray::SetShader(Shader* shader)
 	{
 		m_Shader = std::shared_ptr<Shader>(shader);

@@ -7,78 +7,22 @@ namespace FireFly
 	OpenGLShader::OpenGLShader(const std::string& vertexSRC, const std::string& fragmentSRC)
 		:m_RendererID(0)
 	{
-		//Create Shaders
-		unsigned int vs, fs;
-		GLCALL(vs = glCreateShader(GL_VERTEX_SHADER));
-		GLCALL(fs = glCreateShader(GL_FRAGMENT_SHADER));
-
-		const char* vSource = (const char*)vertexSRC.c_str();
-		const char* fSource = (const char*)fragmentSRC.c_str();
-
-		GLCALL(glShaderSource(vs, 1, &vSource, nullptr));
-		GLCALL(glShaderSource(fs, 1, &fSource, nullptr));
-		
-		int status = 0;
-
-		//Compile the vs
-		GLCALL(glCompileShader(vs));
-		GLCALL(glGetShaderiv(vs, GL_COMPILE_STATUS, &status));
-		if (status != GL_TRUE)
-		{
-			int length;
-			GLCALL(glGetShaderiv(vs, GL_INFO_LOG_LENGTH, &length));
-			char* log = new char[length];
-			GLCALL(glGetShaderInfoLog(vs, length, &length, log));
-			FF_CORE_ERROR("Failed to Compile the shader: {}", log);
-
-			glDeleteShader(vs);
-			delete []log;
-			return;
-		}
-
-		//Compile the fs
-		GLCALL(glCompileShader(fs));
-		GLCALL(glGetShaderiv(fs, GL_COMPILE_STATUS, &status));
-		if (status != GL_TRUE)
-		{
-			int length;
-			GLCALL(glGetShaderiv(fs, GL_INFO_LOG_LENGTH, &length));
-			char* log = new char[length];
-			GLCALL(glGetShaderInfoLog(fs, length, &length, log));
-			FF_CORE_ERROR("Failed to Compile the shader: {}", log);
-
-			glDeleteShader(fs);
-			delete []log;
-			return;
-		}
-
-		//Attach shaders
 		GLCALL(m_RendererID = glCreateProgram());
-		GLCALL(glAttachShader(m_RendererID, vs));
-		GLCALL(glAttachShader(m_RendererID, fs));
-
-		GLCALL(glLinkProgram(m_RendererID));
-
-		GLCALL(glGetProgramiv(m_RendererID, GL_LINK_STATUS, &status));
-		if (status != GL_TRUE)
-		{
-			int length;
-			GLCALL(glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &length));
-			char* log = new char[length];
-			GLCALL(glGetProgramInfoLog(m_RendererID, length, &length, log));
-			FF_CORE_ERROR("Failed to Link the Program: {}", log);
-
-			glDeleteProgram(m_RendererID);
-
-			glDeleteShader(vs);
-			glDeleteShader(fs);
-			delete []log;
-			return;
-		}
-
-		GLCALL(glDeleteShader(vs));
-		GLCALL(glDeleteShader(fs));
+		std::unordered_map<FireFly::Shader::ShaderType, std::string> shaderSources = 
+		{ {FireFly::Shader::ShaderType::VertexShaderSRC, vertexSRC},{FireFly::Shader::ShaderType::FragmentShaderSRC, fragmentSRC} };
+		auto shaderIDs = Compile(shaderSources);
+		Attach(shaderIDs);
 	}
+
+	OpenGLShader::OpenGLShader(const std::string& filepath)
+		:m_RendererID(0)
+	{
+		GLCALL(m_RendererID = glCreateProgram());
+		auto shaderSources = ParseFile(filepath);
+		auto shaderIDs = Compile(shaderSources);
+		Attach(shaderIDs);
+	}
+
 	
 	OpenGLShader::~OpenGLShader()
 	{
@@ -139,5 +83,83 @@ namespace FireFly
 		}
 
 		GLCALL(glUniform1i(location, i));
+	}
+
+
+	//--------HelperFunc---------
+
+
+	GLenum OpenGLShader::ShaderTypeToOpenGLenum(ShaderType type)
+	{
+		switch (type)
+		{
+		case ShaderType::VertexShaderSRC:		return GL_VERTEX_SHADER;
+		case ShaderType::FragmentShaderSRC:		return GL_FRAGMENT_SHADER;
+		}
+		FF_CORE_ASSERT("false", "Unknown Shader type!");
+		return 0;
+	}
+
+	std::unordered_map<Shader::ShaderType, unsigned int> OpenGLShader::Compile(std::unordered_map<ShaderType, std::string>& sourceFile)
+	{
+		std::unordered_map<ShaderType, unsigned int> shaderIDs;
+		//Create Shaders
+		for (const auto pair : sourceFile)
+		{
+			unsigned int shader;
+			GLenum type = ShaderTypeToOpenGLenum(pair.first);
+			GLCALL(shader = glCreateShader(type));
+			shaderIDs[pair.first] = shader;
+			const char* src = (const char*)pair.second.c_str();
+
+			GLCALL(glShaderSource(shader, 1, &src, nullptr));
+
+			int status = 0;
+
+			//Compile the shader
+			GLCALL(glCompileShader(shader));
+			GLCALL(glGetShaderiv(shader, GL_COMPILE_STATUS, &status));
+			if (status != GL_TRUE)
+			{
+				int length;
+				GLCALL(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length));
+				char* log = new char[length];
+				GLCALL(glGetShaderInfoLog(shader, length, &length, log));
+			
+				FF_CORE_ERROR("Failed to Compile the shader: {}", log);
+				FF_CORE_ASSERT(false, "");
+				glDeleteShader(shader);
+				delete[]log;
+				return shaderIDs;
+			}
+		}
+		return shaderIDs;
+	}
+
+	void OpenGLShader::Attach(std::unordered_map<ShaderType, unsigned int>& shaderIDs)
+	{
+		for (auto pair : shaderIDs)
+		{
+			GLCALL(glAttachShader(m_RendererID, pair.second));
+		}
+		GLCALL(glLinkProgram(m_RendererID));
+		int status = 0;
+		GLCALL(glGetProgramiv(m_RendererID, GL_LINK_STATUS, &status));
+		if (status != GL_TRUE)
+		{
+			int length;
+			GLCALL(glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &length));
+			char* log = new char[length];
+			GLCALL(glGetProgramInfoLog(m_RendererID, length, &length, log));
+			FF_CORE_ERROR("Failed to Link the Program: {}", log);
+
+			glDeleteProgram(m_RendererID);
+			delete[]log;
+		}
+		for (auto pair : shaderIDs)
+		{
+			GLCALL(glDeleteShader(pair.second));
+		}
+		return;
 	}
 }

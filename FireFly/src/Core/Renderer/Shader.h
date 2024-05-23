@@ -4,26 +4,27 @@
 
 namespace FireFly
 {
-	enum class ShaderType
-	{
-		None = 0,
-		VertexShaderSRC = 1, FragmentShaderSRC = 2
-	};
-
 	class Shader
 	{
 	public:
+		enum class ShaderType
+		{
+			None = 0,
+			VertexShaderSRC = 1, FragmentShaderSRC = 2
+		};
+		
 		virtual ~Shader() {};
 
 		static Shader* Create(const std::string& vertexSRC, const std::string& fragmentSRC);
-
-		static void ParseFile(const std::string& filepath, ShaderType targetType, std::pair<ShaderType, std::string>& shaderSRC);
+		static Shader* Create(const std::string& filepath);
 
 		virtual void Bind() const = 0;
 		virtual void UnBind() const = 0;
 
 		virtual void UploadUniform(const glm::mat4& mat, const std::string& name) = 0;
 		virtual void UploadUniform(int i, const std::string& name) = 0;
+	protected:
+		std::unordered_map<ShaderType, std::string> ParseFile(const std::string& filepath);
 	};
 
 }

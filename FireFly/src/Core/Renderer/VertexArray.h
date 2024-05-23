@@ -23,6 +23,7 @@ namespace FireFly
 		virtual void SetIndexBuffer(IndexBuffer* indexbuffer);
 
 		virtual void SetShader(const std::string& vsrc, const std::string& fsrc);
+		virtual void SetShader(const std::string& filepath);
 		virtual void SetShader(Shader* shader);
 		
 		virtual void SetBufferLayout(BufferLayout* layout);
