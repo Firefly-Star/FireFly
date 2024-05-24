@@ -11,7 +11,7 @@ namespace FireFly
 		VertexArray();
 		virtual ~VertexArray();
 
-		static VertexArray* Create();
+		static Ref<VertexArray> Create();
 
 		virtual void Bind() const = 0;
 		virtual void UnBind() const = 0;
@@ -24,7 +24,7 @@ namespace FireFly
 
 		virtual void SetShader(const std::string& vsrc, const std::string& fsrc);
 		virtual void SetShader(const std::string& filepath);
-		virtual void SetShader(Shader* shader);
+		virtual void SetShader(Ref<Shader> shader);
 		
 		virtual void SetBufferLayout(BufferLayout* layout);
 

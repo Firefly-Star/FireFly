@@ -6,31 +6,32 @@
 
 namespace FireFly
 {
-	Shader* Shader::Create(const std::string& vertexSRC, const std::string& fragmentSRC)
+	//--------Shader--------
+	Ref<Shader> Shader::Create(const std::string& vertexSRC, const std::string& fragmentSRC)
 	{
 		switch (RendererAPI::GetAPI())
 		{
 		case RendererAPI::API::OpenGL:
-			return new OpenGLShader(vertexSRC, fragmentSRC);
+			return std::make_shared<OpenGLShader>(vertexSRC, fragmentSRC);
 		}
 
 		FF_CORE_ASSERT(false, "Unknown API!");
 		return nullptr;
 	}
 
-	Shader* Shader::Create(const std::string& filepath)
+	Ref<Shader> Shader::Create(const std::string& filepath)
 	{
 		switch (RendererAPI::GetAPI())
 		{
 		case RendererAPI::API::OpenGL:
-			return new OpenGLShader(filepath);
+			return std::make_shared<OpenGLShader>(filepath);
 		}
 
 		FF_CORE_ASSERT(false, "Unknown API!");
 		return nullptr;
 	}
 
-	//--------HelperFunc--------
+	//--------HelperFunc of Shader--------
 	std::unordered_map<Shader::ShaderType, std::string> Shader::ParseFile(const std::string& filepath)
 	{
 		std::fstream file(filepath);
@@ -79,4 +80,19 @@ namespace FireFly
 
 		return result;
 	}
+
+
+	//--------ShaderLibrary--------
+	void ShaderLibrary::Add(const std::string& name, const std::string& filepath)
+	{
+		FF_CORE_ASSERT(m_Shaders.find(name) == m_Shaders.end(), "This name already exists!");
+		m_Shaders[name] = Shader::Create(filepath);
+	}
+
+	Ref<Shader> ShaderLibrary::Get(const std::string& name)
+	{
+		FF_CORE_ASSERT(m_Shaders.find(name) != m_Shaders.end(), "This name not found!");
+		return m_Shaders[name];
+	}
+	
 }

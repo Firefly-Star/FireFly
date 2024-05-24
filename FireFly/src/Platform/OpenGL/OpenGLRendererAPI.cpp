@@ -21,17 +21,22 @@ namespace FireFly
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
-	void OpenGLRendererAPI::PreForRender(const VertexArray* vertexarray)
+	void OpenGLRendererAPI::SetViewPort(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+	{
+		glViewport(x, y, width, height);
+	}
+
+	void OpenGLRendererAPI::PreForRender(Ref<VertexArray> vertexarray)
 	{
 		vertexarray->PreForRender();
 	}
 	
-	void OpenGLRendererAPI::UploadUniform(const VertexArray* vertexarray, const glm::mat4& mat, const std::string name)
+	void OpenGLRendererAPI::UploadUniform(Ref<VertexArray> vertexarray, const glm::mat4& mat, const std::string name)
 	{
 		vertexarray->GetShader()->UploadUniform(mat, name);
 	}
 
-	void OpenGLRendererAPI::DrawIndexed(const VertexArray* vertexarray)
+	void OpenGLRendererAPI::DrawIndexed(Ref<VertexArray> vertexarray)
 	{
 		vertexarray->Render();
 	}

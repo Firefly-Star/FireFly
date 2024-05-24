@@ -4,6 +4,7 @@
 
 #include "Events/Event.h"
 #include "Layer.h"
+#include "TimeStep.h"
 
 namespace FireFly
 {
@@ -20,7 +21,7 @@ namespace FireFly
 		bool EraseOverLayer(Layer* layer);
 
 		bool OnEvent(Event& e);
-		void OnUpdate();
+		void OnUpdate(Ref<TimeStep> ts, Ref<Input> input);
 		void OnImGuiRender();
 
 		inline const std::vector<Ref<Layer>>& GetLayers() { return m_Layers; }

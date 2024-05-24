@@ -20,11 +20,11 @@ namespace FireFly
 	{
 	}
 
-	VertexArray* VertexArray::Create()
+	Ref<VertexArray> VertexArray::Create()
 	{
 		switch (RendererAPI::GetAPI())
 		{
-		case RendererAPI::API::OpenGL: return new OpenGLVertxArray();
+		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLVertxArray>();
 		}
 
 		FF_CORE_ASSERT(false, "Unknown API!");
@@ -54,17 +54,17 @@ namespace FireFly
 	
 	void VertexArray::SetShader(const std::string& vsrc, const std::string& fsrc)
 	{
-		m_Shader = std::shared_ptr<Shader>(Shader::Create(vsrc, fsrc));
+		m_Shader = Shader::Create(vsrc, fsrc);
 	}
 
 	void VertexArray::SetShader(const std::string& filepath)
 	{
-		m_Shader = std::shared_ptr<Shader>(Shader::Create(filepath));
+		m_Shader = Shader::Create(filepath);
 	}
 
-	void VertexArray::SetShader(Shader* shader)
+	void VertexArray::SetShader(Ref<Shader> shader)
 	{
-		m_Shader = std::shared_ptr<Shader>(shader);
+		m_Shader = shader;
 	}
 	
 	void VertexArray::SetBufferLayout(BufferLayout* layout)

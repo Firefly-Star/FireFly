@@ -38,7 +38,7 @@ namespace FireFly
 			GLCALL(glEnableVertexAttribArray(index));
 			auto [offsetplus, size] = LayoutElementType_Size(element.type);
 			auto [type, normalized] = LayoutElementType_OpenGLBaseType(element.type);
-			FF_CORE_INFO("name: {}, offsetplus:{}, size:{}, type:{}, normalized:{}, offset: {}", element.name, offsetplus, size, type, normalized, offset);
+			//FF_CORE_INFO("name: {}, offsetplus:{}, size:{}, type:{}, normalized:{}, offset: {}", element.name, offsetplus, size, type, normalized, offset);
 			GLCALL(glVertexAttribPointer(index, size, type, normalized, m_Stride, (void*)offset));
 			index++;
 			offset += offsetplus;

@@ -5,16 +5,19 @@
 class ExampleLayer : public FireFly::Layer
 {
 public:
-	ExampleLayer(const std::string& name, FireFly::Application* App)
-		:Layer(name), camera({-1.0f, 1.0f, -0.6f, 0.6f}), color(0.8f, 0.3f, 0.2f), app(App)
+	ExampleLayer(const std::string& name)
+		:Layer(name), m_Cameracontroller(1.0f / 1.6f, 1.6f), color(0.8f, 0.3f, 0.2f)
 	{
 		vertexarray = FireFly::VertexArray::Create();
 		vertexarray->Bind();
 
 		texture = FireFly::Texture2D::Create("C:/Users/Summer/Desktop/Game_Engine/FireFly/Sandbox/assets/Texture/Robin.jpg");
+		float origin_asr = 1280 / 960;
+		float pic_asr = (float)texture->GetWidth() / texture->GetHeight();
 		texture->Bind();
 
-		vertexarray->SetShader("C:/Users/Summer/Desktop/Game_Engine/FireFly/Sandbox/assets/Shaders/BasicShader.glsl");
+		m_ShaderLibrary.Add("Basic", "C:/Users/Summer/Desktop/Game_Engine/FireFly/Sandbox/assets/Shaders/BasicShader.glsl");
+		vertexarray->SetShader(m_ShaderLibrary.Get("Basic"));
 		FireFly::Shader* shader = vertexarray->GetShader();
 		shader->Bind();
 		shader->UploadUniform(0, "u_Texture");
@@ -46,67 +49,38 @@ public:
 
 	virtual ~ExampleLayer()
 	{
-		delete vertexarray;
 	}
 
-	virtual void OnUpdate()
+	virtual void OnUpdate(FireFly::Ref<FireFly::TimeStep> ts, FireFly::Ref<FireFly::Input> input)
 	{
-		float deltaTime = app->GetTimeStep()->GetDeltaTime();
-
-		if (app->GetInput()->IsKeyPressed(FF_KEY_UP))
-		{
-			cameraPosition.y += CameraMoveSpeed * deltaTime;
-		}
-		else if (app->GetInput()->IsKeyPressed(FF_KEY_DOWN))
-		{
-			cameraPosition.y -= CameraMoveSpeed * deltaTime;
-		}
-		if (app->GetInput()->IsKeyPressed(FF_KEY_LEFT))
-		{
-			cameraPosition.x -= CameraMoveSpeed * deltaTime;
-		}
-		else if (app->GetInput()->IsKeyPressed(FF_KEY_RIGHT))
-		{
-			cameraPosition.x += CameraMoveSpeed * deltaTime;
-		}
-		
-		if (app->GetInput()->IsKeyPressed(FF_KEY_A))
-		{
-			cameraRotation -= CameraRotateSpeed * deltaTime;
-		}
-		else if (app->GetInput()->IsKeyPressed(FF_KEY_D))
-		{
-			cameraRotation += CameraRotateSpeed * deltaTime;
-		}
-
+		m_Cameracontroller.OnUpdate(ts, input);
 
 		FireFly::RendererCommand::SetClearColor({color, 1.0f });
 		FireFly::RendererCommand::ClearColor();
 
-		camera.SetPosition(cameraPosition);
-		camera.SetRotation(cameraRotation);
-
-		FireFly::Renderer::BeginScene(camera);
+		FireFly::Renderer::BeginScene(m_Cameracontroller.GetCamera());
 
 		FireFly::Renderer::Render(vertexarray);
 		FireFly::Renderer::EndScene();
 	}
 
+	virtual bool OnEvent(FireFly::Event& e) override
+	{
+		m_Cameracontroller.OnEvent(e);
+		return false;
+	}
+
 	virtual void OnImGuiRender()
 	{
+		
 		ImGui::Begin("Settings");
-		ImGui::ColorPicker3("Color", &color.x);
+		ImGui::ColorPicker3("Color", &color.x); 
 		ImGui::End();
 	}
 private:
-	FireFly::Application* app;
-
-	FireFly::VertexArray* vertexarray;
-	FireFly::OrthoCamera camera;
-	glm::vec3 cameraPosition = {0.0f, 0.0f, 0.0f};
-	float cameraRotation = 0.0f;
-	float CameraMoveSpeed = 0.5f;
-	float CameraRotateSpeed = 30.0f;
+	FireFly::ShaderLibrary m_ShaderLibrary;
+	FireFly::Ref<FireFly::VertexArray> vertexarray;
+	FireFly::OrthoCameraController m_Cameracontroller;
 
 	FireFly::Texture2D* texture;
 
@@ -114,10 +88,10 @@ private:
 };
 
 
-FireFly::Application* FireFly::CreateApplication()
+FireFly::Ref<FireFly::Application> FireFly::CreateApplication()
 {
-	auto app = new FireFly::Application();
-	ExampleLayer* examplelayer = new ExampleLayer("Layer", app);
+	FireFly::Ref<Application> app = std::make_shared<FireFly::Application>();
+	ExampleLayer* examplelayer = new ExampleLayer("Layer");
 	app->PushLayer(examplelayer);
 	return app;
 }

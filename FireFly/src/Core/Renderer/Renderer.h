@@ -22,12 +22,13 @@ namespace FireFly
 		virtual void SetClearColor(glm::vec4 color) = 0;
 		virtual void ClearColor() = 0;
 		virtual void Init() = 0;
+		virtual void SetViewPort(unsigned int x, unsigned int y, unsigned int width, unsigned int height) = 0;
 
-		virtual void PreForRender(const VertexArray* vertexarray) = 0;
+		virtual void PreForRender(Ref<VertexArray> vertexarray) = 0;
 
-		virtual void UploadUniform(const VertexArray* vertexarray, const glm::mat4& mat, const std::string name) = 0;
+		virtual void UploadUniform(Ref<VertexArray> vertexarray, const glm::mat4& mat, const std::string name) = 0;
 
-		virtual void DrawIndexed(const VertexArray* vertexarray) = 0;
+		virtual void DrawIndexed(Ref<VertexArray> vertexarray) = 0;
 
 		inline static API GetAPI() { return s_API; }
 		inline static void SetAPI(API api) { s_API = api; }
@@ -45,12 +46,14 @@ namespace FireFly
 		};
 	public:
 		static void BeginScene();
-		static void BeginScene(const OrthoCamera& camera);
+		static void BeginScene(OrthoCamera& camera);
 		static void EndScene();
 
 		static void Init();
 
-		static void Render(const VertexArray* vertexarray);
+		static void Render(Ref<VertexArray> vertexarray);
+
+		static void OnWindowResize(unsigned int width, unsigned int height);
 
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	private:
@@ -64,12 +67,13 @@ namespace FireFly
 		static void SetClearColor(glm::vec4 color);
 		static void ClearColor();
 		static void Init();
+		static void SetViewPort(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
 
-		static void PreForRender(const VertexArray* vertexarray);
+		static void PreForRender(Ref<VertexArray> vertexarray);
 
-		static void Upload(const VertexArray* vertexarray, const Renderer::SceneData& scenedata);
+		static void Upload(Ref<VertexArray> vertexarray, const Renderer::SceneData& scenedata);
 
-		static void DrawIndexed(const VertexArray* vertexarray);
+		static void DrawIndexed(Ref<VertexArray> vertexarray);
 	private:
 		static Ref<RendererAPI> s_RendererAPI;
 	};

@@ -28,7 +28,8 @@
 //TimeStep
 #include "Core/TimeStep.h"
 
-
+//
+#include "Core/CameraController.h"
 
 
 //-----EntryPoint, this should be included in the last------

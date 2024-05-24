@@ -28,7 +28,7 @@ namespace FireFly
 	{
 	}
 
-	void Renderer::BeginScene(const OrthoCamera& camera)
+	void Renderer::BeginScene(OrthoCamera& camera)
 	{
 		s_SceneData.PVmatrix = camera.GetPVmatrix();
 	}
@@ -42,7 +42,12 @@ namespace FireFly
 		RendererCommand::Init();
 	}
 
-	void Renderer::Render(const VertexArray* vertexarray)
+	void Renderer::OnWindowResize(unsigned int width, unsigned int height)
+	{
+		RendererCommand::SetViewPort(0, 0, width, height);
+	}
+
+	void Renderer::Render(Ref<VertexArray> vertexarray)
 	{
 		RendererCommand::PreForRender(vertexarray);
 
@@ -71,17 +76,22 @@ namespace FireFly
 		s_RendererAPI->Init();
 	}
 
-	void RendererCommand::PreForRender(const VertexArray* vertexarray)
+	void RendererCommand::SetViewPort(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+	{
+		s_RendererAPI->SetViewPort(x, y, width, height);
+	}
+
+	void RendererCommand::PreForRender(Ref<VertexArray> vertexarray)
 	{
 		s_RendererAPI->PreForRender(vertexarray);
 	}
 
-	void RendererCommand::Upload(const VertexArray* vertexarray, const Renderer::SceneData& scenedata)
+	void RendererCommand::Upload(Ref<VertexArray> vertexarray, const Renderer::SceneData& scenedata)
 	{
 		s_RendererAPI->UploadUniform(vertexarray, scenedata.PVmatrix, "u_PVmatrix");
 	}
 
-	void RendererCommand::DrawIndexed(const VertexArray* vertexarray)
+	void RendererCommand::DrawIndexed(Ref<VertexArray> vertexarray)
 	{
 		s_RendererAPI->DrawIndexed(vertexarray);
 	}

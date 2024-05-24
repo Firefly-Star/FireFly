@@ -85,14 +85,13 @@ workspace "FireFly"
 			defines "FF_DEBUG"
 			symbols "On"
 			runtime "Debug"
+			
 
 		filter "configurations:Release"
-			defines "FF_DEBUG"
 			optimize "On"
 			runtime "Release"
 
 		filter "configurations:Debug"
-			defines "FF_DEBUG"
 			optimize "Full"
 			runtime "Release"
 ------------------------------------------------------------------------
@@ -140,12 +139,10 @@ workspace "FireFly"
 			runtime "Debug"
 
 		filter "configurations:Release"
-			defines "FF_DEBUG"
 			optimize "On"
 			runtime "Release"
 
 		filter "configurations:Debug"
-			defines "FF_DEBUG"
 			optimize "Full"
 			runtime "Release"
 

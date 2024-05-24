@@ -56,7 +56,7 @@ namespace FireFly
 		void SetOrthoParameters(const glm::vec4& ortho_parameters);
 		void SetPosition(const glm::vec3& position);
 		void SetRotation(float rotation);
-		const glm::mat4& GetPVmatrix() const;
+		const glm::mat4& GetPVmatrix();
 	private:
 		void ReCalMatrix();
 	private:

@@ -26,7 +26,7 @@ namespace FireFly
 	//--------OrthoCamera--------
 	OrthoCamera::OrthoCamera()
 		:m_Position({0.0f, 0.0f, 0.0f}), m_Rotation(0.0f), 
-		m_PerspectiveMatrix(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f,1.0f)),
+		m_PerspectiveMatrix(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f)),
 		m_ViewMatrix(1.0f)
 	{
 		ReCalMatrix();
@@ -48,17 +48,16 @@ namespace FireFly
 	void OrthoCamera::SetPosition(const glm::vec3& position)
 	{
 		m_Position = position;
-		ReCalMatrix();
 	}
 
 	void OrthoCamera::SetRotation(float rotation)
 	{
 		m_Rotation = rotation;
-		ReCalMatrix();
 	}
 
-	const glm::mat4& OrthoCamera::GetPVmatrix() const
+	const glm::mat4& OrthoCamera::GetPVmatrix()
 	{
+		ReCalMatrix();
 		return m_PVmatrix;
 	}
 

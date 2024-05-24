@@ -23,23 +23,22 @@ namespace FireFly
 		void PushLayer(Layer* layer);
 		void PushOverLayer(Layer* layer);
 		inline const Window* GetWindow() { return m_Window.get(); }
-		inline const Input* GetInput() { return m_Input.get(); }
-		inline const TimeStep* GetTimeStep() { return m_TimeStep.get(); }
 	private:
 		bool OnEvent(Event& e);
 		bool OnClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 	private:
 		Ref<Window> m_Window;
 		Ref<Input> m_Input;
 		Ref<ImGuiLayer> m_ImGuiLayer;
-		bool m_Running = true;
+		Ref<TimeStep> m_TimeStep;
 
 		LayerStack m_LayerStack;
 
-		Ref<TimeStep> m_TimeStep;
+		bool m_Running = true;
 	};
 
 	//To be defined in the CLIENT(Sandbox)
-	Application* CreateApplication();
+	Ref<Application> CreateApplication();
 
 }

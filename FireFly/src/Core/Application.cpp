@@ -16,7 +16,7 @@ namespace FireFly
 {
 	Application::Application()
 	{
-		WindowProp prop(1600, 960);
+		WindowProp prop(1600, 1600);
 		m_Window.reset(Window::Create(prop));
 		m_Window->SetEventCallback(FF_BIND_EVENT_FN(Application::OnEvent));
 		void* window_ptr = m_Window->GetWindowHandle();
@@ -35,7 +35,7 @@ namespace FireFly
 	{
 		while (m_Running)
 		{
-			m_LayerStack.OnUpdate();
+			m_LayerStack.OnUpdate(m_TimeStep, m_Input);
 
 			m_ImGuiLayer->Begin();
 			m_LayerStack.OnImGuiRender();
@@ -65,6 +65,7 @@ namespace FireFly
 		EventDispatcher dispatcher(e);
 
 		dispatcher.EventDispatch<WindowCloseEvent>(FF_BIND_EVENT_FN(Application::OnClose));
+		dispatcher.EventDispatch<WindowResizeEvent>(FF_BIND_EVENT_FN(Application::OnWindowResize));
 		bool isHandled = m_LayerStack.OnEvent(e);
 		
 		return isHandled;
@@ -76,4 +77,9 @@ namespace FireFly
 		return true;
 	}
 
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		return false;
+	}
 }

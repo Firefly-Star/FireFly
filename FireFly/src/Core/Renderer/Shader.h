@@ -4,6 +4,8 @@
 
 namespace FireFly
 {
+
+	//--------Shader--------
 	class Shader
 	{
 	public:
@@ -15,8 +17,8 @@ namespace FireFly
 		
 		virtual ~Shader() {};
 
-		static Shader* Create(const std::string& vertexSRC, const std::string& fragmentSRC);
-		static Shader* Create(const std::string& filepath);
+		static Ref<Shader> Create(const std::string& vertexSRC, const std::string& fragmentSRC);
+		static Ref<Shader> Create(const std::string& filepath);
 
 		virtual void Bind() const = 0;
 		virtual void UnBind() const = 0;
@@ -27,4 +29,13 @@ namespace FireFly
 		std::unordered_map<ShaderType, std::string> ParseFile(const std::string& filepath);
 	};
 
+	//--------ShaderLibrary--------
+	class ShaderLibrary
+	{
+	public:
+		void Add(const std::string& name, const std::string& filepath);
+		Ref<Shader> Get(const std::string& name);
+	private:
+		std::unordered_map<std::string, Ref<Shader>> m_Shaders;
+	};
 }

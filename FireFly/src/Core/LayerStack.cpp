@@ -66,16 +66,16 @@ namespace FireFly
 		return e.IsHandled();
 	}
 
-	void LayerStack::OnUpdate()
+	void LayerStack::OnUpdate(Ref<TimeStep> ts, Ref<Input> input)
 	{
 		for (auto it = m_OverLayers.end(); it != m_OverLayers.begin();)
 		{
-			(*--it)->OnUpdate();
+			(*--it)->OnUpdate(ts, input);
 		}
 
 		for (auto it = m_Layers.end(); it != m_Layers.begin();)
 		{
-			(*--it)->OnUpdate();
+			(*--it)->OnUpdate(ts, input);
 		}
 	}
 
