@@ -16,7 +16,7 @@ namespace FireFly
 {
 	Application::Application()
 	{
-		WindowProp prop(1600, 1600);
+		WindowProp prop(1600, 960);
 		m_Window.reset(Window::Create(prop));
 		m_Window->SetEventCallback(FF_BIND_EVENT_FN(Application::OnEvent));
 		void* window_ptr = m_Window->GetWindowHandle();
@@ -25,6 +25,8 @@ namespace FireFly
 		m_ImGuiLayer->OnAttach();
 
 		m_TimeStep.reset(TimeStep::Create());
+
+		Renderer::Init();
 	}
 
 	Application::~Application()
@@ -36,7 +38,7 @@ namespace FireFly
 		while (m_Running)
 		{
 			m_LayerStack.OnUpdate(m_TimeStep, m_Input);
-
+			
 			m_ImGuiLayer->Begin();
 			m_LayerStack.OnImGuiRender();
 			m_ImGuiLayer->OnImGuiRender();
@@ -45,16 +47,20 @@ namespace FireFly
 			m_Window->OnUpdate();
 
 			m_TimeStep->OnUpdate();
+
+
+			FireFly::RendererCommand::SetClearColor(glm::vec4(0.1f, 0.2f, 0.1f, 1.0f));
+			FireFly::RendererCommand::ClearColor();
 		}
 	}
 
-	void Application::PushLayer(Layer* layer)
+	void Application::PushLayer(Ref<Layer> layer)
 	{
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
 
-	void Application::PushOverLayer(Layer* layer)
+	void Application::PushOverLayer(Ref<Layer> layer)
 	{
 		m_LayerStack.PushOverLayer(layer);
 		layer->OnAttach();

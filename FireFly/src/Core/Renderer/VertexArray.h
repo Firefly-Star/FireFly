@@ -17,10 +17,8 @@ namespace FireFly
 		virtual void UnBind() const = 0;
 
 		virtual void SetVertexBuffer(float* vertices, unsigned int size);
-		virtual void SetVertexBuffer(VertexBuffer* vertexbuffer);
 
 		virtual void SetIndexBuffer(unsigned int* indices, unsigned int size);
-		virtual void SetIndexBuffer(IndexBuffer* indexbuffer);
 
 		virtual void SetShader(const std::string& vsrc, const std::string& fsrc);
 		virtual void SetShader(const std::string& filepath);

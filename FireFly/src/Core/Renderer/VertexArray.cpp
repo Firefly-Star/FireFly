@@ -37,19 +37,9 @@ namespace FireFly
 		m_VertexBuffer = std::shared_ptr<VertexBuffer>(VertexBuffer::Create(vertices, size));
 	}
 
-	void VertexArray::SetVertexBuffer(VertexBuffer* vertexbuffer)
-	{
-		m_VertexBuffer = std::shared_ptr<VertexBuffer>(vertexbuffer);
-	}
-	
 	void VertexArray::SetIndexBuffer(unsigned int* indices, unsigned int size)
 	{
 		m_IndexBuffer = std::shared_ptr<IndexBuffer>(IndexBuffer::Create(indices, size));
-	}
-
-	void VertexArray::SetIndexBuffer(IndexBuffer* indexbuffer)
-	{
-		m_IndexBuffer = std::shared_ptr<IndexBuffer>(indexbuffer);
 	}
 	
 	void VertexArray::SetShader(const std::string& vsrc, const std::string& fsrc)

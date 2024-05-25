@@ -25,6 +25,7 @@ namespace FireFly
 
 		virtual void UploadUniform(const glm::mat4& mat, const std::string& name) = 0;
 		virtual void UploadUniform(int i, const std::string& name) = 0;
+		virtual void UploadUniform(float x1, float x2, float x3, float x4, const std::string& name) = 0;
 	protected:
 		std::unordered_map<ShaderType, std::string> ParseFile(const std::string& filepath);
 	};

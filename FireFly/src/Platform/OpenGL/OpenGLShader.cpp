@@ -41,50 +41,33 @@ namespace FireFly
 
 	void OpenGLShader::UploadUniform(const glm::mat4& mat, const std::string& name)
 	{
-		int location;
-		auto it = m_UniformLocationMap.find(name);
+		int location = GetLocation(name);
 
-		if (it != m_UniformLocationMap.end())
+		if (location != -1)
 		{
-			location = it->second;
+			GLCALL(glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]));
 		}
-		else
-		{
-			GLCALL(location = glGetUniformLocation(m_RendererID, name.c_str()));
-			if (location == -1)
-			{
-				FF_CORE_WARN("Failed to locate the Uniform \"{0}\"!", name);
-				return;
-			}
-			m_UniformLocationMap[name] = location;
-		}
-
-		GLCALL(glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]));
 	}
 
 	void OpenGLShader::UploadUniform(int i, const std::string& name)
 	{
-		int location;
-		auto it = m_UniformLocationMap.find(name);
+		int location = GetLocation(name);
 
-		if (it != m_UniformLocationMap.end())
+		if (location != -1)
 		{
-			location = it->second;
+			GLCALL(glUniform1i(location, i));
 		}
-		else
-		{
-			GLCALL(location = glGetUniformLocation(m_RendererID, name.c_str()));
-			if (location == -1)
-			{
-				FF_CORE_WARN("Failed to locate the Uniform \"{0}\"!", name);
-				return;
-			}
-			m_UniformLocationMap[name] = location;
-		}
-
-		GLCALL(glUniform1i(location, i));
 	}
 
+	void OpenGLShader::UploadUniform(float x1, float x2, float x3, float x4, const std::string& name)
+	{
+		int location = GetLocation(name);
+
+		if (location != -1)
+		{
+			GLCALL(glUniform4f(location, x1, x2, x3, x4));
+		}
+	}
 
 	//--------HelperFunc---------
 
@@ -161,5 +144,27 @@ namespace FireFly
 			GLCALL(glDeleteShader(pair.second));
 		}
 		return;
+	}
+
+	int OpenGLShader::GetLocation(const std::string& name)
+	{
+		int location;
+		auto it = m_UniformLocationMap.find(name);
+
+		if (it != m_UniformLocationMap.end())
+		{
+			location = it->second;
+		}
+		else
+		{
+			GLCALL(location = glGetUniformLocation(m_RendererID, name.c_str()));
+			if (location == -1)
+			{
+				FF_CORE_WARN("Failed to locate the Uniform \"{0}\"!", name);
+				return -1;
+			}
+			m_UniformLocationMap[name] = location;
+		}
+		return location;
 	}
 }

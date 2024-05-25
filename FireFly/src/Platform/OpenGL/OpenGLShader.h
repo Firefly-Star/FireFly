@@ -15,10 +15,12 @@ namespace FireFly
 
 		virtual void UploadUniform(const glm::mat4& mat, const std::string& name) override;
 		virtual void UploadUniform(int i, const std::string& name) override;
+		virtual void UploadUniform(float x1, float x2, float x3, float x4, const std::string& name) override;
 	private:
 		unsigned int ShaderTypeToOpenGLenum(ShaderType type);
 		std::unordered_map<ShaderType, unsigned int> Compile(std::unordered_map<ShaderType, std::string>& sourceFile);
 		void Attach(std::unordered_map<ShaderType, unsigned int>& shaderIDs);
+		int GetLocation(const std::string& name);
 	private:
 		unsigned int m_RendererID;
 		std::unordered_map<std::string, int> m_UniformLocationMap;

@@ -14,11 +14,11 @@ namespace FireFly
 		LayerStack();
 		~LayerStack();
 
-		void PushLayer(Layer* layer);
-		void PushOverLayer(Layer* layer);
+		void PushLayer(Ref<Layer> layer);
+		void PushOverLayer(Ref<Layer> layer);
 
-		bool EraseLayer(Layer* layer);
-		bool EraseOverLayer(Layer* layer);
+		bool EraseLayer(Ref<Layer> layer);
+		bool EraseOverLayer(Ref<Layer> layer);
 
 		bool OnEvent(Event& e);
 		void OnUpdate(Ref<TimeStep> ts, Ref<Input> input);

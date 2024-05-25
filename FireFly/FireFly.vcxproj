@@ -602,6 +602,7 @@
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\CameraController.cpp" />
+    <ClCompile Include="src\Core\EntryPoint.cpp" />
     <ClCompile Include="src\Core\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Core\Input.cpp" />
     <ClCompile Include="src\Core\LayerStack.cpp" />

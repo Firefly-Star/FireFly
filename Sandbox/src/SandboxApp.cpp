@@ -1,11 +1,12 @@
 #include <FireFly.h>
 
-#include "../../FireFly/vendor/ImGui/imgui.h"
+#include <imgui.h>
+#include "Sandbox2D.h"
 
 class ExampleLayer : public FireFly::Layer
 {
 public:
-	ExampleLayer(const std::string& name)
+	ExampleLayer(const std::string& name = "name")
 		:Layer(name), m_Cameracontroller(1.0f / 1.6f, 1.6f), color(0.8f, 0.3f, 0.2f)
 	{
 		vertexarray = FireFly::VertexArray::Create();
@@ -55,9 +56,7 @@ public:
 	{
 		m_Cameracontroller.OnUpdate(ts, input);
 
-		FireFly::RendererCommand::SetClearColor({color, 1.0f });
-		FireFly::RendererCommand::ClearColor();
-
+		FireFly::RendererCommand::SetClearColor({ color, 1.0f });
 		FireFly::Renderer::BeginScene(m_Cameracontroller.GetCamera());
 
 		FireFly::Renderer::Render(vertexarray);
@@ -91,8 +90,9 @@ private:
 FireFly::Ref<FireFly::Application> FireFly::CreateApplication()
 {
 	FireFly::Ref<Application> app = std::make_shared<FireFly::Application>();
-	ExampleLayer* examplelayer = new ExampleLayer("Layer");
-	app->PushLayer(examplelayer);
+	
+	//aapp->PushLayer(std::make_shared<ExampleLayer>());
+	app->PushLayer(std::make_shared<Sandbox2D>());
 	return app;
 }
 

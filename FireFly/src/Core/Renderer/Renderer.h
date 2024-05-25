@@ -35,7 +35,7 @@ namespace FireFly
 	private:
 		static API s_API;
 	};
-	
+
 	//--------Renderer-------------
 	class Renderer		// Top API, to DISPATCH the whole Render process, and INTERACT with APPLICATION
 	{
@@ -60,6 +60,21 @@ namespace FireFly
 		static SceneData s_SceneData;
 	};
 
+	//----------Renderer2D-----------
+	class Renderer2D
+	{
+	public:
+
+		static void Init();
+		static void Shutdowm();
+		static void BeginScene();
+		static void BeginScene(OrthoCamera& camera);
+		static void EndScene();
+
+
+		static void DrawQuads(glm::vec3 position, glm::vec2 size, glm::vec4 color);
+	};
+
 	//----------RendererCommand------
 	class RendererCommand	// Middle layer, to ACCEPT instructions from Renderer and GENERATE commands to RendererAPI
 	{
@@ -77,4 +92,7 @@ namespace FireFly
 	private:
 		static Ref<RendererAPI> s_RendererAPI;
 	};
+
+
+	
 }

@@ -14,22 +14,19 @@ namespace FireFly
 
 	}
 
-	void LayerStack::PushLayer(Layer* layer)
+	void LayerStack::PushLayer(Ref<Layer> layer)
 	{
-		m_Layers.emplace_back(std::shared_ptr<Layer>(layer));
+		m_Layers.emplace_back(layer);
 	}
 
-	void LayerStack::PushOverLayer(Layer* layer)
+	void LayerStack::PushOverLayer(Ref<Layer> layer)
 	{
-		m_OverLayers.emplace_back(std::shared_ptr<Layer>(layer));
+		m_OverLayers.emplace_back(layer);
 	}
 
-	bool LayerStack::EraseLayer(Layer* layer)
+	bool LayerStack::EraseLayer(Ref<Layer> layer)
 	{
-		auto it = std::find_if(m_Layers.begin(), m_Layers.end(), [layer](std::shared_ptr<Layer> l)
-			{
-				return l.get() == layer;
-			});
+		auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
 		if (it != m_Layers.end())
 		{
 			m_Layers.erase(it);
@@ -38,12 +35,9 @@ namespace FireFly
 		return false;
 	}
 
-	bool LayerStack::EraseOverLayer(Layer* layer)
+	bool LayerStack::EraseOverLayer(Ref<Layer> layer)
 	{
-		auto it = std::find_if(m_OverLayers.begin(), m_OverLayers.end(), [layer](std::shared_ptr<Layer> l)
-			{
-				return l.get() == layer;
-			});
+		auto it = std::find(m_OverLayers.begin(), m_OverLayers.end(), layer);
 		if (it != m_OverLayers.end())
 		{
 			m_OverLayers.erase(it);

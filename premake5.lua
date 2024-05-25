@@ -117,7 +117,9 @@ workspace "FireFly"
 		{
 			"FireFly/vendor/spdlog/include",
 			"FireFly/src",
-			"%{IncludeDir.GLM}"
+			"%{IncludeDir.GLM}",
+			"%{IncludeDir.ImGui}",
+			"%{IncludeDir.ImGui}/backends"
 		}
 
 		links

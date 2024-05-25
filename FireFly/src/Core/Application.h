@@ -20,9 +20,9 @@ namespace FireFly
 
 		void Run();
 
-		void PushLayer(Layer* layer);
-		void PushOverLayer(Layer* layer);
-		inline const Window* GetWindow() { return m_Window.get(); }
+		void PushLayer(Ref<Layer> layer);
+		void PushOverLayer(Ref<Layer> layer);
+		inline const Ref<Window> GetWindow() { return m_Window; }
 	private:
 		bool OnEvent(Event& e);
 		bool OnClose(WindowCloseEvent& e);
