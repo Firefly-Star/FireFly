@@ -8,7 +8,7 @@ namespace FireFly
 {
 	bool WindowsInput::IsKeyPressed(int keycode) const
 	{
-		FF_CORE_ASSERT(m_Window, "Invalid Window!")
+		FF_CORE_ASSERT(m_Window, "Invalid Window!");
 		GLFWwindow* window = (GLFWwindow*)m_Window;
 
 		auto state = glfwGetKey(window, keycode);
@@ -17,7 +17,7 @@ namespace FireFly
 
 	bool WindowsInput::IsMousePressed(int button) const
 	{
-		FF_CORE_ASSERT(m_Window, "Invalid Window!")
+		FF_CORE_ASSERT(m_Window, "Invalid Window!");
 		GLFWwindow* window = (GLFWwindow*)m_Window;
 
 		auto state = glfwGetMouseButton(window, button);
@@ -27,7 +27,7 @@ namespace FireFly
 
 	std::pair<float, float> WindowsInput::GetMousePos() const
 	{
-		FF_CORE_ASSERT(m_Window, "Invalid Window!")
+		FF_CORE_ASSERT(m_Window, "Invalid Window!");
 		GLFWwindow* window = (GLFWwindow*)m_Window;
 
 		double x, y;

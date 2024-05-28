@@ -11,11 +11,11 @@
 #endif
 
 #ifdef FF_DEBUG
-#define FF_CORE_ASSERT(x,...) {if(!(x)) {FF_CORE_ERROR("Assertion Failed: {}",__VA_ARGS__); __debugbreak();}}
-#define FF_CLIENT_ASSERT(x,...) {if(!(x)) {FF_CLIENT_ERROR("Assertion Failed: {}",__VA_ARGS__); __debugbreak();}}
+#define FF_CORE_ASSERT(x,...) do{if(!(x)) {FF_CORE_ERROR("Assertion Failed: {}",__VA_ARGS__); __debugbreak();}}while(0)
+#define FF_CLIENT_ASSERT(x,...) do{if(!(x)) {FF_CLIENT_ERROR("Assertion Failed: {}",__VA_ARGS__); __debugbreak();}}while(0)
 #else
-#define FF_CORE_ASSERT(x,...) x;
-#define FF_CLIENT_ASSERT(x,...) x;
+#define FF_CORE_ASSERT(x,...) x
+#define FF_CLIENT_ASSERT(x,...) x
 #endif
 
 namespace FireFly
@@ -25,4 +25,6 @@ namespace FireFly
 
 	template<typename T>
 	using Scope = std::unique_ptr<T>;
+
+	using byte = unsigned char;
 }

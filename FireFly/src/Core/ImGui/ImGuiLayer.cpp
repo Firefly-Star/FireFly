@@ -13,7 +13,7 @@
 
 namespace FireFly
 {
-	ImGuiLayer::ImGuiLayer(const std::string& name = "ImGui Layer", void* window = nullptr)
+	ImGuiLayer::ImGuiLayer(const char* name = "ImGui Layer", void* window = nullptr)
 		:Layer(name), m_Window(window)
 	{
 	}
@@ -27,7 +27,7 @@ namespace FireFly
 	void ImGuiLayer::OnAttach()
 	{
 		GLFWwindow* window = (GLFWwindow*)m_Window;
-		FF_CORE_ASSERT(window && !glfwWindowShouldClose(window) && glfwGetCurrentContext() == window, "Invalid Window!")
+		FF_CORE_ASSERT(window && !glfwWindowShouldClose(window) && glfwGetCurrentContext() == window, "Invalid Window!");
 
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();

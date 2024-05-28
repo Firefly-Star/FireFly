@@ -8,10 +8,62 @@
 
 namespace FireFly
 {
+	//----RendererCommandQueue----
+
+	RendererCommandQueue::RendererCommandQueue()
+		:m_CommandCount(0)
+	{
+		m_RendererCommandBuffer = new byte[FF_BUFFER_SIZE];
+		m_BufferWorkPtr = m_RendererCommandBuffer;
+		memset(m_RendererCommandBuffer, 0, FF_BUFFER_SIZE);
+	}
+
+	RendererCommandQueue::~RendererCommandQueue()
+	{
+		delete[] m_RendererCommandBuffer;
+		m_RendererCommandBuffer = nullptr;
+		m_BufferWorkPtr = nullptr;
+	}
+
+	void RendererCommandQueue::SubmitCommand(CommandFunc fn, void* params, unsigned int size)
+	{
+		memcpy(m_BufferWorkPtr, &fn, sizeof(CommandFunc));
+		m_BufferWorkPtr += sizeof(CommandFunc);
+		memcpy(m_BufferWorkPtr, params, size);
+		m_BufferWorkPtr += size;
+
+		auto totalSize = sizeof(CommandFunc) + size;
+		auto padding = totalSize % 16;
+		m_BufferWorkPtr += 16 - padding;
+		m_CommandCount++;
+		//FF_CORE_TRACE("Renderer Command Queue: {0}commands, {1}bytes", m_CommandCount, m_BufferWorkPtr - m_RendererCommandBuffer);
+	}
+
+	void RendererCommandQueue::Execute()
+	{
+		//FF_CORE_TRACE("Renderer Command Queue: {0}commands, {1}bytes", m_CommandCount, m_BufferWorkPtr - m_RendererCommandBuffer);
+		byte* workPtr = m_RendererCommandBuffer;
+
+		for (unsigned int i = 1; i <= m_CommandCount; i++)
+		{
+			auto func = *(CommandFunc*)workPtr;
+			workPtr += sizeof(CommandFunc);
+			workPtr += func(workPtr);
+			
+			auto padding = (workPtr - m_RendererCommandBuffer) % 16;
+			workPtr += 16 - padding;
+		}
+
+		m_BufferWorkPtr = m_RendererCommandBuffer;
+		m_CommandCount = 0;
+	}
+
+
 	
 	//--------Renderer-------------
 
 	Renderer::SceneData Renderer::s_SceneData = { glm::mat4(1.0f) };
+	RendererCommandQueue Renderer::s_RendererCommandQueue = RendererCommandQueue();
 
 	void Renderer::BeginScene()
 	{
@@ -34,7 +86,19 @@ namespace FireFly
 
 	void Renderer::OnWindowResize(unsigned int width, unsigned int height)
 	{
-		RendererCommand::SetViewPort(0, 0, width, height);
+		unsigned int params[] = {0, 0, width, height};
+		s_RendererCommandQueue.SubmitCommand(RendererCommand::SetViewPort, params, 4 * sizeof(unsigned int));
+	}
+
+	void Renderer::SetClearColor(float r, float g, float b, float a)
+	{
+		float params[] = { r, g, b, a };
+		s_RendererCommandQueue.SubmitCommand(RendererCommand::SetClearColor, params, 4 * sizeof(float));
+	}
+
+	void Renderer::Clear()
+	{
+		s_RendererCommandQueue.SubmitCommand(RendererCommand::Clear, nullptr, 0);
 	}
 
 	void Renderer::Render(Ref<VertexArray> vertexarray)
@@ -48,11 +112,17 @@ namespace FireFly
 		RendererCommand::DrawIndexed(vertexarray);
 	}
 
+	void Renderer::Render()
+	{
+		s_RendererCommandQueue.Execute();
+	}
+
 	//----------Renderer2D-----------
 	struct Renderer2DPrimitives
 	{
 		Ref<VertexArray> vertexArray;
 		Ref<Shader> shader;
+		Ref<Texture> pureWhiteTexture;
 	};
 
 	static Renderer2DPrimitives* s_Renderer2DPrimitives = nullptr;
@@ -61,29 +131,29 @@ namespace FireFly
 	{
 		s_Renderer2DPrimitives = new Renderer2DPrimitives();
 
-		Ref<VertexArray>& vertexArray = s_Renderer2DPrimitives->vertexArray;
-		Ref<Shader>& shader = s_Renderer2DPrimitives->shader;
+		unsigned char data[] = { 255, 255, 255, 255 };
+		s_Renderer2DPrimitives->pureWhiteTexture = Texture2D::Create();
+		s_Renderer2DPrimitives->pureWhiteTexture->SetTexture(data, 1, 1);
 
+		s_Renderer2DPrimitives->vertexArray = VertexArray::Create();
+		s_Renderer2DPrimitives->vertexArray->Bind();
 
-		vertexArray = VertexArray::Create();
-		vertexArray->Bind();
-
-		shader = Shader::Create("C:/Users/Summer/Desktop/Game_Engine/FireFly/Sandbox/assets/Shaders/PureColor.glsl");
-		vertexArray->SetShader(shader);
+		s_Renderer2DPrimitives->shader = Shader::Create("C:/Users/Summer/Desktop/Game_Engine/FireFly/Sandbox/assets/Shaders/TextureShader2D.glsl");
 
 		float vertices[] =
 		{
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 
-		vertexArray->SetVertexBuffer(vertices, 12 * sizeof(float));
+		s_Renderer2DPrimitives->vertexArray->SetVertexBuffer(vertices, 20 * sizeof(float));
 
-		BufferLayout* layout = vertexArray->GetBufferLayout();
+		BufferLayout* layout = s_Renderer2DPrimitives->vertexArray->GetBufferLayout();
 
 		layout->Push({ "Position", FireFly::LayoutElementType::Float3 });
+		layout->Push({ "Texture Coord", FireFly::LayoutElementType::Float2 });
 
 		unsigned int indices[] =
 		{
@@ -91,7 +161,7 @@ namespace FireFly
 			2, 3, 0
 		};
 
-		vertexArray->SetIndexBuffer(indices, 6 * sizeof(unsigned int));
+		s_Renderer2DPrimitives->vertexArray->SetIndexBuffer(indices, 6 * sizeof(unsigned int));
 	}
 
 	void Renderer2D::Shutdowm()
@@ -106,7 +176,7 @@ namespace FireFly
 
 	void Renderer2D::BeginScene(OrthoCamera& camera)
 	{
-		Ref<Shader>& shader = s_Renderer2DPrimitives->shader;
+		Ref<Shader> shader = s_Renderer2DPrimitives->shader;
 
 		shader->Bind();
 		shader->UploadUniform(camera.GetPVmatrix(), "u_PVmatrix");
@@ -117,32 +187,85 @@ namespace FireFly
 
 	}
 
-	void Renderer2D::DrawQuads(glm::vec3 position, glm::vec2 size, glm::vec4 color)
+	void Renderer2D::DrawQuads(glm::vec2 position, glm::vec2 size, glm::vec4 color, float rotation)
 	{
-		Ref<VertexArray>& vertexArray = s_Renderer2DPrimitives->vertexArray;
-		Ref<Shader>& shader = s_Renderer2DPrimitives->shader;
-
-		RendererCommand::PreForRender(vertexArray);
-
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
-
-		shader->UploadUniform(color.x, color.y, color.z, color.w, "u_Color");
-		shader->UploadUniform(transform, "u_Model");
-		RendererCommand::DrawIndexed(vertexArray);
+		DrawQuads(glm::vec3(position.x, position.y, 0.0f), size, color, rotation);
 	}
 
+	void Renderer2D::DrawQuads(glm::vec2 position, glm::vec2 size, Ref<Texture>& texture, float rotation)
+	{
+		DrawQuads(glm::vec3(position.x, position.y, 0.0f), size, texture, rotation);
+	}
+
+	void Renderer2D::DrawQuads(glm::vec2 position, glm::vec2 size, Ref<Texture>& texture, glm::vec4 color, float rotation)
+	{
+		DrawQuads(glm::vec3(position.x, position.y, 0.0f), size, texture, color, rotation);
+	}
+
+	void Renderer2D::DrawQuads(glm::vec3 position, glm::vec2 size, glm::vec4 color, float rotation)
+	{
+		s_Renderer2DPrimitives->vertexArray->PreForRender();
+		s_Renderer2DPrimitives->shader->Bind();
+
+		glm::mat4 transform =
+			glm::translate(glm::mat4(1.0f), position) *
+			glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f)) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f });
+		s_Renderer2DPrimitives->pureWhiteTexture->Bind();
+
+		s_Renderer2DPrimitives->shader->UploadUniform(0, "u_Texture");
+		s_Renderer2DPrimitives->shader->UploadUniform(transform, "u_Model");
+		s_Renderer2DPrimitives->shader->UploadUniform(color.x, color.y, color.z, color.w, "u_Color");
+		RendererCommand::DrawIndexed(s_Renderer2DPrimitives->vertexArray);
+	}
+
+	void Renderer2D::DrawQuads(glm::vec3 position, glm::vec2 size, Ref<Texture>& texture, float rotation)
+	{
+		s_Renderer2DPrimitives->vertexArray->PreForRender();
+		s_Renderer2DPrimitives->shader->Bind();
+
+		glm::mat4 transform =
+			glm::translate(glm::mat4(1.0f), position) *
+			glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f)) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f });
+		texture->Bind();
+
+		s_Renderer2DPrimitives->shader->UploadUniform(0, "u_Texture");
+		s_Renderer2DPrimitives->shader->UploadUniform(transform, "u_Model");
+		s_Renderer2DPrimitives->shader->UploadUniform(1.0f, 1.0f, 1.0f, 1.0f, "u_Color");
+		RendererCommand::DrawIndexed(s_Renderer2DPrimitives->vertexArray);
+	}
+
+	void Renderer2D::DrawQuads(glm::vec3 position, glm::vec2 size, Ref<Texture>& texture, glm::vec4 color, float rotation)
+	{
+		s_Renderer2DPrimitives->vertexArray->PreForRender();
+		s_Renderer2DPrimitives->shader->Bind();
+
+		glm::mat4 transform =
+			glm::translate(glm::mat4(1.0f), position) *
+			glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f)) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f });
+		texture->Bind();
+
+		s_Renderer2DPrimitives->shader->UploadUniform(0, "u_Texture");
+		s_Renderer2DPrimitives->shader->UploadUniform(transform, "u_Model");
+		s_Renderer2DPrimitives->shader->UploadUniform(color.r, color.g, color.b, color.a, "u_Color");
+		RendererCommand::DrawIndexed(s_Renderer2DPrimitives->vertexArray);
+	}
 
 	//----------RendererCommand------
 	Ref<RendererAPI> RendererCommand::s_RendererAPI = std::shared_ptr<RendererAPI>(RendererAPI::Create());
 
-	void RendererCommand::SetClearColor(glm::vec4 color)
+	unsigned int RendererCommand::SetClearColor(void* datapack)
 	{
-		s_RendererAPI->SetClearColor(color);
+		s_RendererAPI->SetClearColor((float*)datapack);
+		return 4 * sizeof(float);
 	}
 
-	void RendererCommand::ClearColor()
+	unsigned int RendererCommand::Clear(void* datapack)
 	{
-		s_RendererAPI->ClearColor();
+		s_RendererAPI->Clear();
+		return 0;
 	}
 
 	void RendererCommand::Init()
@@ -150,9 +273,11 @@ namespace FireFly
 		s_RendererAPI->Init();
 	}
 
-	void RendererCommand::SetViewPort(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+	unsigned int RendererCommand::SetViewPort(void* datapack)
 	{
-		s_RendererAPI->SetViewPort(x, y, width, height);
+		unsigned int* params = (unsigned int*)datapack;
+		s_RendererAPI->SetViewPort(params[0], params[1], params[2], params[3]);
+		return 4 * sizeof(unsigned int);
 	}
 
 	void RendererCommand::PreForRender(Ref<VertexArray> vertexarray)
@@ -184,5 +309,5 @@ namespace FireFly
 		return nullptr;
 	}
 
-	
+
 }

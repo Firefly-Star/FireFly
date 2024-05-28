@@ -52,7 +52,7 @@ namespace FireFly
 				{
 					FF_CORE_ERROR("GLFW error ({0}): {}!", error_code, description);
 				});
-			FF_CORE_ASSERT(glfwInit(), "Failed to initialize GLFW!")
+			FF_CORE_ASSERT(glfwInit(), "Failed to initialize GLFW!");
 			s_IsGLFWInitialized = true;
 		}
 

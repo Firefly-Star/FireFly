@@ -34,7 +34,10 @@ namespace FireFly
 		{
 			GLCALL(glBindVertexArray(m_RendererID));
 		
-			m_Shader->Bind();
+			if (m_Shader)
+			{
+				m_Shader->Bind();
+			}
 			m_VertexBuffer->Bind();
 			m_IndexBuffer->Bind();
 

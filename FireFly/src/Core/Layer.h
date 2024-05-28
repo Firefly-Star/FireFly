@@ -12,7 +12,7 @@ namespace FireFly
 	class Layer
 	{
 	public:
-		Layer(const std::string& name = "layer") :m_Name(name) {}
+		Layer(const char* name = "layer") :m_Name(name) {}
 		virtual ~Layer(){}
 
 		virtual void OnAttach(){}
@@ -21,6 +21,6 @@ namespace FireFly
 		virtual void OnImGuiRender() {}//	目前是ImGui专用的渲染函数，用来创建每一层自带的GUI
 		virtual bool OnEvent(Event& e) { return e.IsHandled(); }//	对事件的响应，与Event类联动作出响应
 	protected:
-		std::string m_Name;
+		const char* m_Name;
 	};
 }

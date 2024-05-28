@@ -6,8 +6,8 @@ namespace FireFly
 {
 	class OpenGLRendererAPI : public RendererAPI
 	{
-		virtual void SetClearColor(glm::vec4 color) override;
-		virtual void ClearColor() override;
+		virtual void SetClearColor(float* color) override;
+		virtual void Clear() override;
 		virtual void Init() override;
 		virtual void SetViewPort(unsigned int x, unsigned int y, unsigned int width, unsigned int height) override;
 

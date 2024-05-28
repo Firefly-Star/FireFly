@@ -5,25 +5,27 @@
 
 namespace FireFly
 {
-	void OpenGLRendererAPI::SetClearColor(glm::vec4 color)
+	void OpenGLRendererAPI::SetClearColor(float* color)
 	{
-		GLCALL(glClearColor(color.r, color.g, color.b, color.a));
+		GLCALL(glClearColor(color[0], color[1], color[2], color[3]));
 	}
 
-	void OpenGLRendererAPI::ClearColor()
+	void OpenGLRendererAPI::Clear()
 	{
 		GLCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 	}
 
 	void OpenGLRendererAPI::Init()
 	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		GLCALL(glEnable(GL_BLEND));
+		GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+		GLCALL(glEnable(GL_DEPTH_TEST));
 	}
 
 	void OpenGLRendererAPI::SetViewPort(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
 	{
-		glViewport(x, y, width, height);
+		GLCALL(glViewport(x, y, width, height));
 	}
 
 	void OpenGLRendererAPI::PreForRender(Ref<VertexArray> vertexarray)

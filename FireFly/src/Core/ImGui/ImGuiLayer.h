@@ -13,7 +13,7 @@ namespace FireFly
 	class ImGuiLayer : public Layer
 	{
 	public:
-		ImGuiLayer(const std::string& name, void* window);
+		ImGuiLayer(const char* name, void* window);
 		~ImGuiLayer();
 
 		virtual void OnImGuiRender() override;

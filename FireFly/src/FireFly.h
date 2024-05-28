@@ -7,6 +7,7 @@
 #include "Core/Core.h"
 #include "Core/Application.h"
 #include "Core/Log.h"
+#include "Debug/Timer.h"
 
 //Layer
 #include "Core/Layer.h"

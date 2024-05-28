@@ -11,6 +11,7 @@
 
 #include "Renderer/Renderer.h"
 
+#include <glad/glad.h>
 
 namespace FireFly
 {
@@ -37,6 +38,9 @@ namespace FireFly
 	{
 		while (m_Running)
 		{
+			Renderer::SetClearColor(0.4f, 1.0f, 0.3f, 1.0f);
+			Renderer::Clear();
+			
 			m_LayerStack.OnUpdate(m_TimeStep, m_Input);
 			
 			m_ImGuiLayer->Begin();
@@ -48,9 +52,7 @@ namespace FireFly
 
 			m_TimeStep->OnUpdate();
 
-
-			FireFly::RendererCommand::SetClearColor(glm::vec4(0.1f, 0.2f, 0.1f, 1.0f));
-			FireFly::RendererCommand::ClearColor();
+			Renderer::Render();
 		}
 	}
 

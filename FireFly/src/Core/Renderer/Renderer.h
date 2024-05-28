@@ -2,11 +2,31 @@
 
 #include "VertexArray.h"
 #include "Camera.h"
+#include "Texture.h"
 
 #include "glm/glm.hpp"
 
 namespace FireFly
 {
+	//----RendererCommandQueue----
+	class RendererCommandQueue
+	{
+	public:
+// 10MB Buffer
+#define FF_BUFFER_SIZE 10 * 1024 * 1024  
+		typedef unsigned int(*CommandFunc)(void*);
+		RendererCommandQueue();
+		~RendererCommandQueue();
+		void SubmitCommand(CommandFunc fn, void* params, unsigned int size);
+		void Execute();
+	private:
+		byte* m_RendererCommandBuffer;
+		byte* m_BufferWorkPtr;
+		unsigned int m_CommandCount;
+	};
+
+
+
 	//---------RendererAPI--------
 	class RendererAPI	// Bottom API, to EXECUTE instructions from RendererCommand with SPECIFIC API such as Opengl or DirectX
 	{
@@ -19,8 +39,8 @@ namespace FireFly
 	public:
 		static RendererAPI* Create();
 
-		virtual void SetClearColor(glm::vec4 color) = 0;
-		virtual void ClearColor() = 0;
+		virtual void SetClearColor(float* color) = 0;
+		virtual void Clear() = 0;
 		virtual void Init() = 0;
 		virtual void SetViewPort(unsigned int x, unsigned int y, unsigned int width, unsigned int height) = 0;
 
@@ -53,11 +73,16 @@ namespace FireFly
 
 		static void Render(Ref<VertexArray> vertexarray);
 
+		static void SetClearColor(float r, float g, float b, float a);
+		static void Clear();
 		static void OnWindowResize(unsigned int width, unsigned int height);
+
+		static void Render();
 
 		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	private:
 		static SceneData s_SceneData;
+		static RendererCommandQueue s_RendererCommandQueue;
 	};
 
 	//----------Renderer2D-----------
@@ -72,17 +97,24 @@ namespace FireFly
 		static void EndScene();
 
 
-		static void DrawQuads(glm::vec3 position, glm::vec2 size, glm::vec4 color);
+		static void DrawQuads(glm::vec2 position, glm::vec2 size, glm::vec4 color, float rotation = 0.0f);
+		static void DrawQuads(glm::vec2 position, glm::vec2 size, Ref<Texture>& texture, float rotation = 0.0f);
+		static void DrawQuads(glm::vec2 position, glm::vec2 size, Ref<Texture>& texture, glm::vec4 color, float rotation = 0.0f);
+
+		
+		static void DrawQuads(glm::vec3 position, glm::vec2 size, glm::vec4 color, float rotation = 0.0f);
+		static void DrawQuads(glm::vec3 position, glm::vec2 size, Ref<Texture>& texture, float rotation = 0.0f);
+		static void DrawQuads(glm::vec3 position, glm::vec2 size, Ref<Texture>& texture, glm::vec4 color, float rotation = 0.0f);
 	};
 
 	//----------RendererCommand------
 	class RendererCommand	// Middle layer, to ACCEPT instructions from Renderer and GENERATE commands to RendererAPI
 	{
 	public:
-		static void SetClearColor(glm::vec4 color);
-		static void ClearColor();
+		static unsigned int SetClearColor(void* datapack);
+		static unsigned int Clear(void* datapack);
 		static void Init();
-		static void SetViewPort(unsigned int x, unsigned int y, unsigned int width, unsigned int height);
+		static unsigned int SetViewPort(void* datapack);
 
 		static void PreForRender(Ref<VertexArray> vertexarray);
 
