@@ -87,7 +87,7 @@ namespace FireFly
 
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
-		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		//Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 		return false;
 	}
 }

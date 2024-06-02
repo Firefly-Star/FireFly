@@ -2,7 +2,7 @@
 
 #include <FireFly.h>
 #include "Speed.h"
-
+#if 0
 class Rocket
 {
 public:
@@ -58,3 +58,4 @@ private:
 	float m_RightSpeed;
 	float m_TriangleDist;
 };
+#endif

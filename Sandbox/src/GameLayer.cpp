@@ -1,6 +1,6 @@
 #include "GameLayer.h"
 #include <random>
-
+#if 0
 GameLayer::GameLayer(float rightSpeed, float m_TriangleDist, const char* name)
 	:Layer(name), m_Triangles(0.1f, 0.3f)
 {
@@ -96,3 +96,4 @@ void Triangles::OnUpdate(float right)
 		}
 	}
 }
+#endif

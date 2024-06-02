@@ -1,7 +1,7 @@
 #include "Sandbox2D.h"
 #include "imgui.h"
 
-
+#if 0
 Sandbox2D::Sandbox2D(const char* name)
 	:Layer(name), m_Cameracontroller(1.6f, 1.0f), m_Color({0.2f, 0.8f, 0.3f, 1.0f})
 {
@@ -29,3 +29,4 @@ void Sandbox2D::OnImGuiRender()
 	ImGui::ColorPicker4("BG Color", &m_Color[0]);
 	ImGui::End();
 }
+#endif

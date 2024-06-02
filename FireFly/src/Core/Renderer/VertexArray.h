@@ -28,6 +28,7 @@ namespace FireFly
 
 		inline Shader* GetShader() const { return m_Shader.get(); }
 		inline BufferLayout* GetBufferLayout() const { return m_BufferLayout.get(); }
+		inline unsigned int GetCount() const { return m_IndexBuffer->GetCount(); }
 
 		virtual void PreForRender() const = 0;
 

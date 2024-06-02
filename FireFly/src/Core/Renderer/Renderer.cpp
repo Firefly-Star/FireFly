@@ -1,69 +1,23 @@
 #include "ffpch.h"
 
-#include "Renderer.h"
 
+#include "Renderer.h"
 #include "Platform/OpenGL/OpenGLRendererAPI.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
+#if 1
 namespace FireFly
 {
-	//----RendererCommandQueue----
-
-	RendererCommandQueue::RendererCommandQueue()
-		:m_CommandCount(0)
-	{
-		m_RendererCommandBuffer = new byte[FF_BUFFER_SIZE];
-		m_BufferWorkPtr = m_RendererCommandBuffer;
-		memset(m_RendererCommandBuffer, 0, FF_BUFFER_SIZE);
-	}
-
-	RendererCommandQueue::~RendererCommandQueue()
-	{
-		delete[] m_RendererCommandBuffer;
-		m_RendererCommandBuffer = nullptr;
-		m_BufferWorkPtr = nullptr;
-	}
-
-	void RendererCommandQueue::SubmitCommand(CommandFunc fn, void* params, unsigned int size)
-	{
-		memcpy(m_BufferWorkPtr, &fn, sizeof(CommandFunc));
-		m_BufferWorkPtr += sizeof(CommandFunc);
-		memcpy(m_BufferWorkPtr, params, size);
-		m_BufferWorkPtr += size;
-
-		auto totalSize = sizeof(CommandFunc) + size;
-		auto padding = totalSize % 16;
-		m_BufferWorkPtr += 16 - padding;
-		m_CommandCount++;
-		//FF_CORE_TRACE("Renderer Command Queue: {0}commands, {1}bytes", m_CommandCount, m_BufferWorkPtr - m_RendererCommandBuffer);
-	}
-
-	void RendererCommandQueue::Execute()
-	{
-		//FF_CORE_TRACE("Renderer Command Queue: {0}commands, {1}bytes", m_CommandCount, m_BufferWorkPtr - m_RendererCommandBuffer);
-		byte* workPtr = m_RendererCommandBuffer;
-
-		for (unsigned int i = 1; i <= m_CommandCount; i++)
-		{
-			auto func = *(CommandFunc*)workPtr;
-			workPtr += sizeof(CommandFunc);
-			workPtr += func(workPtr);
-			
-			auto padding = (workPtr - m_RendererCommandBuffer) % 16;
-			workPtr += 16 - padding;
-		}
-
-		m_BufferWorkPtr = m_RendererCommandBuffer;
-		m_CommandCount = 0;
-	}
-
-
-	
 	//--------Renderer-------------
 
 	Renderer::SceneData Renderer::s_SceneData = { glm::mat4(1.0f) };
 	RendererCommandQueue Renderer::s_RendererCommandQueue = RendererCommandQueue();
+
+	void Renderer::Submit(RendererCommandQueue::CommandFunc func, byte* params, unsigned int size, unsigned int alignment)
+	{
+		s_RendererCommandQueue.Submit(func, params, size, alignment);
+	}
 
 	void Renderer::BeginScene()
 	{
@@ -80,36 +34,38 @@ namespace FireFly
 
 	void Renderer::Init()
 	{
-		RendererCommand::Init();
-		Renderer2D::Init();
+		FF_RENDER({
+			RendererAPI::Init();
+			Renderer2D::Init();
+			});
 	}
 
 	void Renderer::OnWindowResize(unsigned int width, unsigned int height)
 	{
-		unsigned int params[] = {0, 0, width, height};
-		s_RendererCommandQueue.SubmitCommand(RendererCommand::SetViewPort, params, 4 * sizeof(unsigned int));
+		
 	}
 
 	void Renderer::SetClearColor(float r, float g, float b, float a)
 	{
-		float params[] = { r, g, b, a };
-		s_RendererCommandQueue.SubmitCommand(RendererCommand::SetClearColor, params, 4 * sizeof(float));
+		FF_RENDER_4({
+			RendererAPI::SetClearColor(r, g, b, a);
+			}, r, g, b, a);
 	}
 
 	void Renderer::Clear()
 	{
-		s_RendererCommandQueue.SubmitCommand(RendererCommand::Clear, nullptr, 0);
+		FF_RENDER({
+			RendererAPI::Clear();
+			})
 	}
 
 	void Renderer::Render(Ref<VertexArray> vertexarray)
 	{
-		RendererCommand::PreForRender(vertexarray);
-
-		RendererCommand::Upload(vertexarray, s_SceneData);
-
-
-
-		RendererCommand::DrawIndexed(vertexarray);
+		FF_RENDER_2({
+			RendererAPI::PreForRender(vertexarray);
+			RendererAPI::UploadUniform(vertexarray, s_SceneData.PVmatrix, "u_PVmatrix");
+			RendererAPI::DrawIndexed(vertexarray->GetCount());
+			}, vertexarray, s_SceneData)
 	}
 
 	void Renderer::Render()
@@ -204,110 +160,58 @@ namespace FireFly
 
 	void Renderer2D::DrawQuads(glm::vec3 position, glm::vec2 size, glm::vec4 color, float rotation)
 	{
-		s_Renderer2DPrimitives->vertexArray->PreForRender();
-		s_Renderer2DPrimitives->shader->Bind();
+		FF_RENDER_4({
+			s_Renderer2DPrimitives->vertexArray->PreForRender();
+			s_Renderer2DPrimitives->shader->Bind();
+			glm::mat4 transform =
+				glm::translate(glm::mat4(1.0f), position) *
+				glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f)) *
+				glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f });
+			s_Renderer2DPrimitives->pureWhiteTexture->Bind();
 
-		glm::mat4 transform =
-			glm::translate(glm::mat4(1.0f), position) *
-			glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f)) *
-			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f });
-		s_Renderer2DPrimitives->pureWhiteTexture->Bind();
-
-		s_Renderer2DPrimitives->shader->UploadUniform(0, "u_Texture");
-		s_Renderer2DPrimitives->shader->UploadUniform(transform, "u_Model");
-		s_Renderer2DPrimitives->shader->UploadUniform(color.x, color.y, color.z, color.w, "u_Color");
-		RendererCommand::DrawIndexed(s_Renderer2DPrimitives->vertexArray);
+			s_Renderer2DPrimitives->shader->UploadUniform(0, "u_Texture");
+			s_Renderer2DPrimitives->shader->UploadUniform(transform, "u_Model");
+			s_Renderer2DPrimitives->shader->UploadUniform(color.x, color.y, color.z, color.w, "u_Color");
+			RendererAPI::DrawIndexed(s_Renderer2DPrimitives->vertexArray->GetCount());
+			}, position, size, color, rotation);
 	}
 
 	void Renderer2D::DrawQuads(glm::vec3 position, glm::vec2 size, Ref<Texture>& texture, float rotation)
 	{
-		s_Renderer2DPrimitives->vertexArray->PreForRender();
-		s_Renderer2DPrimitives->shader->Bind();
+		FF_RENDER_4({
+			s_Renderer2DPrimitives->vertexArray->PreForRender();
+			s_Renderer2DPrimitives->shader->Bind();
 
-		glm::mat4 transform =
-			glm::translate(glm::mat4(1.0f), position) *
-			glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f)) *
-			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f });
-		texture->Bind();
+			glm::mat4 transform =
+				glm::translate(glm::mat4(1.0f), position) *
+				glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f)) *
+				glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f });
+			texture->Bind();
 
-		s_Renderer2DPrimitives->shader->UploadUniform(0, "u_Texture");
-		s_Renderer2DPrimitives->shader->UploadUniform(transform, "u_Model");
-		s_Renderer2DPrimitives->shader->UploadUniform(1.0f, 1.0f, 1.0f, 1.0f, "u_Color");
-		RendererCommand::DrawIndexed(s_Renderer2DPrimitives->vertexArray);
+			s_Renderer2DPrimitives->shader->UploadUniform(0, "u_Texture");
+			s_Renderer2DPrimitives->shader->UploadUniform(transform, "u_Model");
+			s_Renderer2DPrimitives->shader->UploadUniform(1.0f, 1.0f, 1.0f, 1.0f, "u_Color");
+			RendererAPI::DrawIndexed(s_Renderer2DPrimitives->vertexArray->GetCount());
+			}, position, size, texture, rotation);
 	}
 
 	void Renderer2D::DrawQuads(glm::vec3 position, glm::vec2 size, Ref<Texture>& texture, glm::vec4 color, float rotation)
 	{
-		s_Renderer2DPrimitives->vertexArray->PreForRender();
-		s_Renderer2DPrimitives->shader->Bind();
+		FF_RENDER_5({
+			s_Renderer2DPrimitives->vertexArray->PreForRender();
+			s_Renderer2DPrimitives->shader->Bind();
 
-		glm::mat4 transform =
-			glm::translate(glm::mat4(1.0f), position) *
-			glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f)) *
-			glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f });
-		texture->Bind();
+			glm::mat4 transform =
+				glm::translate(glm::mat4(1.0f), position) *
+				glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f)) *
+				glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f });
+			texture->Bind();
 
-		s_Renderer2DPrimitives->shader->UploadUniform(0, "u_Texture");
-		s_Renderer2DPrimitives->shader->UploadUniform(transform, "u_Model");
-		s_Renderer2DPrimitives->shader->UploadUniform(color.r, color.g, color.b, color.a, "u_Color");
-		RendererCommand::DrawIndexed(s_Renderer2DPrimitives->vertexArray);
+			s_Renderer2DPrimitives->shader->UploadUniform(0, "u_Texture");
+			s_Renderer2DPrimitives->shader->UploadUniform(transform, "u_Model");
+			s_Renderer2DPrimitives->shader->UploadUniform(color.r, color.g, color.b, color.a, "u_Color");
+			RendererAPI::DrawIndexed(s_Renderer2DPrimitives->vertexArray->GetCount());
+			}, position, size, texture, color, rotation);
 	}
-
-	//----------RendererCommand------
-	Ref<RendererAPI> RendererCommand::s_RendererAPI = std::shared_ptr<RendererAPI>(RendererAPI::Create());
-
-	unsigned int RendererCommand::SetClearColor(void* datapack)
-	{
-		s_RendererAPI->SetClearColor((float*)datapack);
-		return 4 * sizeof(float);
-	}
-
-	unsigned int RendererCommand::Clear(void* datapack)
-	{
-		s_RendererAPI->Clear();
-		return 0;
-	}
-
-	void RendererCommand::Init()
-	{
-		s_RendererAPI->Init();
-	}
-
-	unsigned int RendererCommand::SetViewPort(void* datapack)
-	{
-		unsigned int* params = (unsigned int*)datapack;
-		s_RendererAPI->SetViewPort(params[0], params[1], params[2], params[3]);
-		return 4 * sizeof(unsigned int);
-	}
-
-	void RendererCommand::PreForRender(Ref<VertexArray> vertexarray)
-	{
-		s_RendererAPI->PreForRender(vertexarray);
-	}
-
-	void RendererCommand::Upload(Ref<VertexArray> vertexarray, const Renderer::SceneData& scenedata)
-	{
-		s_RendererAPI->UploadUniform(vertexarray, scenedata.PVmatrix, "u_PVmatrix");
-	}
-
-	void RendererCommand::DrawIndexed(Ref<VertexArray> vertexarray)
-	{
-		s_RendererAPI->DrawIndexed(vertexarray);
-	}
-
-	//---------RendererAPI--------
-	RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL;
-
-	RendererAPI* RendererAPI::Create()
-	{
-		switch (s_API)
-		{
-		case (API::OpenGL): return new OpenGLRendererAPI();
-		}
-
-		FF_CORE_ASSERT(false, "Unknown API!");
-		return nullptr;
-	}
-
-
 }
+#endif

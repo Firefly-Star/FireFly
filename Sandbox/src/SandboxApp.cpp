@@ -4,6 +4,7 @@
 #include "Sandbox2D.h"
 #include "GameLayer.h"
 
+#if 0
 class ExampleLayer : public FireFly::Layer
 {
 public:
@@ -85,14 +86,15 @@ private:
 
 	glm::vec3 color;
 };
-
+#endif
 
 FireFly::Ref<FireFly::Application> FireFly::CreateApplication()
 {
+
 	FireFly::Ref<Application> app = std::make_shared<FireFly::Application>();
 	
 	//app->PushLayer(std::make_shared<ExampleLayer>());
-	app->PushLayer(std::make_shared<Sandbox2D>());
+	//app->PushLayer(std::make_shared<Sandbox2D>());
 	//app->PushLayer(std::make_shared<GameLayer>(0.2f, 0.4f));
 	
 	return app;

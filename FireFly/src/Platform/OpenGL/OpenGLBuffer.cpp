@@ -1,6 +1,5 @@
 #include "ffpch.h"
 #include "OpenGLBuffer.h"
-#include "OpenGLError.h"
 
 #include <glad/glad.h>
 
@@ -35,11 +34,11 @@ namespace FireFly
 
 		for (auto element : m_Elements)
 		{
-			GLCALL(glEnableVertexAttribArray(index));
+			glEnableVertexAttribArray(index);
 			auto [offsetplus, size] = LayoutElementType_Size(element.type);
 			auto [type, normalized] = LayoutElementType_OpenGLBaseType(element.type);
 			//FF_CORE_INFO("name: {}, offsetplus:{}, size:{}, type:{}, normalized:{}, offset: {}", element.name, offsetplus, size, type, normalized, offset);
-			GLCALL(glVertexAttribPointer(index, size, type, normalized, m_Stride, (void*)offset));
+			glVertexAttribPointer(index, size, type, normalized, m_Stride, (void*)offset);
 			index++;
 			offset += offsetplus;
 		}
@@ -49,50 +48,50 @@ namespace FireFly
 	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, unsigned int size)
 		:m_RendererID(0)
 	{
-		GLCALL(glGenBuffers(1, &m_RendererID));
-		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
+		glGenBuffers(1, &m_RendererID);
+		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 
-		GLCALL(glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW));
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 	}
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
 	{
-		GLCALL(glDeleteBuffers(1, &m_RendererID));
+		glDeleteBuffers(1, &m_RendererID);
 	}
 
 	void OpenGLVertexBuffer::Bind() const
 	{
-		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
+		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 	}
 
 	void OpenGLVertexBuffer::UnBind() const
 	{
-		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, 0));
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	//----------IndexBuffer----------
 	OpenGLIndexBuffer::OpenGLIndexBuffer(unsigned int* indices, unsigned int size)
 		:m_RendererID(0), m_Count(size / sizeof(unsigned int))
 	{
-		GLCALL(glGenBuffers(1, &m_RendererID));
-		GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
+		glGenBuffers(1, &m_RendererID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 
-		GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW));
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
 	}
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer()
 	{
-		GLCALL(glDeleteBuffers(1, &m_RendererID));
+		glDeleteBuffers(1, &m_RendererID);
 	}
 
 	void OpenGLIndexBuffer::Bind() const
 	{
-		GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 	}
 
 	void OpenGLIndexBuffer::UnBind() const
 	{
-		GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 
 

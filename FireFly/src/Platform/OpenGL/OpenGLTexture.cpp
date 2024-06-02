@@ -1,7 +1,6 @@
 #include "ffpch.h"
 
 #include "OpenGLTexture.h"
-#include "OpenGLError.h"
 #include "stb_image/stb_image.h"
 
 #include <Glad/glad.h>

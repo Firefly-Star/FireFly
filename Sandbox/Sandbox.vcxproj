@@ -134,6 +134,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\GameLayer.h" />
+    <ClInclude Include="src\Sandbox2D.h" />
+    <ClInclude Include="src\Speed.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="src\GameLayer.cpp" />
     <ClCompile Include="src\Sandbox2D.cpp" />
     <ClCompile Include="src\SandboxApp.cpp" />
@@ -143,11 +148,6 @@
     <ProjectReference Include="..\FireFly\FireFly.vcxproj">
       <Project>{1668610D-8247-E0A8-8B5F-6B7FF7BD460A}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\GameLayer.h" />
-    <ClInclude Include="src\Sandbox2D.h" />
-    <ClInclude Include="src\Speed.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

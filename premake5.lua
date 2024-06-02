@@ -84,6 +84,7 @@ workspace "FireFly"
 		filter "configurations:Debug"
 			defines "FF_DEBUG"
 			symbols "On"
+			optimize "Off"
 			runtime "Debug"
 			
 

@@ -1,45 +1,73 @@
 #include "ffpch.h"
 
 #include "OpenGLRendererAPI.h"
-#include "OpenGLError.h"
+
+#include <glad/glad.h>
 
 namespace FireFly
 {
-	void OpenGLRendererAPI::SetClearColor(float* color)
+	static void APIENTRY OpenGLDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 	{
-		GLCALL(glClearColor(color[0], color[1], color[2], color[3]));
+		switch (severity)
+		{
+		case(GL_DEBUG_SEVERITY_LOW):
+			FF_CORE_WARN("OpenGL Waring({0}): {1}", id, message);
+			break;
+		case(GL_DEBUG_SEVERITY_HIGH):
+		case(GL_DEBUG_SEVERITY_MEDIUM):
+			FF_CORE_ERROR("OpenGL Error(0): {1}", id, message);
+			break;
+		default:
+			break;
+		}
 	}
 
-	void OpenGLRendererAPI::Clear()
+	void OpenGLRendererAPI::SetClearColorImpl(float r, float g, float b, float a)
 	{
-		GLCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		glClearColor(r, g, b, a);
 	}
 
-	void OpenGLRendererAPI::Init()
+	void OpenGLRendererAPI::ClearImpl()
 	{
-		GLCALL(glEnable(GL_BLEND));
-		GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-
-		GLCALL(glEnable(GL_DEPTH_TEST));
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void OpenGLRendererAPI::SetViewPort(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+	void OpenGLRendererAPI::InitImpl()
 	{
-		GLCALL(glViewport(x, y, width, height));
+		glDebugMessageCallback(OpenGLDebugMessage, nullptr);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		glEnable(GL_DEPTH_TEST);
 	}
 
-	void OpenGLRendererAPI::PreForRender(Ref<VertexArray> vertexarray)
+	void OpenGLRendererAPI::SetViewPortImpl(unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+	{
+		glViewport(x, y, width, height);
+	}
+
+	void OpenGLRendererAPI::PreForRenderImpl(Ref<VertexArray> vertexarray)
 	{
 		vertexarray->PreForRender();
 	}
 	
-	void OpenGLRendererAPI::UploadUniform(Ref<VertexArray> vertexarray, const glm::mat4& mat, const std::string name)
+	void OpenGLRendererAPI::UploadUniformImpl(Ref<VertexArray> vertexarray, const glm::mat4& mat, const std::string name)
 	{
 		vertexarray->GetShader()->UploadUniform(mat, name);
 	}
 
-	void OpenGLRendererAPI::DrawIndexed(Ref<VertexArray> vertexarray)
+	void OpenGLRendererAPI::DrawIndexedImpl(unsigned int count, bool isEnableDepthTest)
 	{
-		vertexarray->Render();
+		if (isEnableDepthTest)
+		{
+			glEnable(GL_DEPTH_TEST);
+		}
+		else
+		{
+			glDisable(GL_DEPTH_TEST);
+		}
+
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_BYTE, 0);
 	}
 }

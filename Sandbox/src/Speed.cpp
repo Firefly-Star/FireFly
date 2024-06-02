@@ -1,5 +1,5 @@
 #include "Speed.h"
-
+#if 0
 float Speed::s_g = 1.0f;
 
 Speed::Speed(glm::vec2& v, float a)
@@ -31,3 +31,4 @@ void Position::OnUpdate(FireFly::Ref<FireFly::TimeStep> ts, FireFly::Ref<FireFly
 	m_Speed->OnUpdate(ts, input);
 	m_Position += ts->GetDeltaTime() * m_Speed->GetV();
 }
+#endif

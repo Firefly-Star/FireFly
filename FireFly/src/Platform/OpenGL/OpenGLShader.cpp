@@ -1,13 +1,14 @@
 #include "ffpch.h"
 #include "OpenGLShader.h"
-#include "OpenGLError.h"
+
+#include <glad/glad.h>
 
 namespace FireFly
 {
 	OpenGLShader::OpenGLShader(const std::string& vertexSRC, const std::string& fragmentSRC)
 		:m_RendererID(0)
 	{
-		GLCALL(m_RendererID = glCreateProgram());
+		m_RendererID = glCreateProgram();
 		std::unordered_map<FireFly::Shader::ShaderType, std::string> shaderSources = 
 		{ {FireFly::Shader::ShaderType::VertexShaderSRC, vertexSRC},{FireFly::Shader::ShaderType::FragmentShaderSRC, fragmentSRC} };
 		auto shaderIDs = Compile(shaderSources);
@@ -17,7 +18,7 @@ namespace FireFly
 	OpenGLShader::OpenGLShader(const std::string& filepath)
 		:m_RendererID(0)
 	{
-		GLCALL(m_RendererID = glCreateProgram());
+		m_RendererID = glCreateProgram();
 		auto shaderSources = ParseFile(filepath);
 		auto shaderIDs = Compile(shaderSources);
 		Attach(shaderIDs);
@@ -26,17 +27,17 @@ namespace FireFly
 	
 	OpenGLShader::~OpenGLShader()
 	{
-		GLCALL(glDeleteProgram(m_RendererID));
+		glDeleteProgram(m_RendererID);
 	}
 	
 	void OpenGLShader::Bind() const
 	{
-		GLCALL(glUseProgram(m_RendererID));
+		glUseProgram(m_RendererID);
 	}
 	
 	void OpenGLShader::UnBind() const
 	{
-		GLCALL(glUseProgram(0));
+		glUseProgram(0);
 	}
 
 	void OpenGLShader::UploadUniform(const glm::mat4& mat, const std::string& name)
@@ -45,7 +46,7 @@ namespace FireFly
 
 		if (location != -1)
 		{
-			GLCALL(glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]));
+			glUniformMatrix4fv(location, 1, GL_FALSE, &mat[0][0]);
 		}
 	}
 
@@ -55,7 +56,7 @@ namespace FireFly
 
 		if (location != -1)
 		{
-			GLCALL(glUniform1i(location, i));
+			glUniform1i(location, i);
 		}
 	}
 
@@ -65,7 +66,7 @@ namespace FireFly
 
 		if (location != -1)
 		{
-			GLCALL(glUniform4f(location, x1, x2, x3, x4));
+			glUniform4f(location, x1, x2, x3, x4);
 		}
 	}
 
@@ -91,23 +92,23 @@ namespace FireFly
 		{
 			unsigned int shader;
 			GLenum type = ShaderTypeToOpenGLenum(pair.first);
-			GLCALL(shader = glCreateShader(type));
+			shader = glCreateShader(type);
 			shaderIDs[pair.first] = shader;
 			const char* src = (const char*)pair.second.c_str();
 
-			GLCALL(glShaderSource(shader, 1, &src, nullptr));
+			glShaderSource(shader, 1, &src, nullptr);
 
 			int status = 0;
 
 			//Compile the shader
-			GLCALL(glCompileShader(shader));
-			GLCALL(glGetShaderiv(shader, GL_COMPILE_STATUS, &status));
+			glCompileShader(shader);
+			glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 			if (status != GL_TRUE)
 			{
 				int length;
-				GLCALL(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length));
+				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
 				char* log = new char[length];
-				GLCALL(glGetShaderInfoLog(shader, length, &length, log));
+				glGetShaderInfoLog(shader, length, &length, log);
 			
 				FF_CORE_ERROR("Failed to Compile the shader: {}", log);
 				FF_CORE_ASSERT(false, "");
@@ -123,17 +124,17 @@ namespace FireFly
 	{
 		for (auto pair : shaderIDs)
 		{
-			GLCALL(glAttachShader(m_RendererID, pair.second));
+			glAttachShader(m_RendererID, pair.second);
 		}
-		GLCALL(glLinkProgram(m_RendererID));
+		glLinkProgram(m_RendererID);
 		int status = 0;
-		GLCALL(glGetProgramiv(m_RendererID, GL_LINK_STATUS, &status));
+		glGetProgramiv(m_RendererID, GL_LINK_STATUS, &status);
 		if (status != GL_TRUE)
 		{
 			int length;
-			GLCALL(glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &length));
+			glGetProgramiv(m_RendererID, GL_INFO_LOG_LENGTH, &length);
 			char* log = new char[length];
-			GLCALL(glGetProgramInfoLog(m_RendererID, length, &length, log));
+			glGetProgramInfoLog(m_RendererID, length, &length, log);
 			FF_CORE_ERROR("Failed to Link the Program: {}", log);
 
 			glDeleteProgram(m_RendererID);
@@ -141,7 +142,7 @@ namespace FireFly
 		}
 		for (auto pair : shaderIDs)
 		{
-			GLCALL(glDeleteShader(pair.second));
+			glDeleteShader(pair.second);
 		}
 		return;
 	}
@@ -157,7 +158,7 @@ namespace FireFly
 		}
 		else
 		{
-			GLCALL(location = glGetUniformLocation(m_RendererID, name.c_str()));
+			location = glGetUniformLocation(m_RendererID, name.c_str());
 			if (location == -1)
 			{
 				FF_CORE_WARN("Failed to locate the Uniform \"{0}\"!", name);

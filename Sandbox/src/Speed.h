@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 #include <FireFly.h>
 #include <cmath>
-
+#if 0
 #define PI 3.1415926f
 class Speed
 {
@@ -32,3 +32,4 @@ private:
 	const FireFly::Ref<Speed> m_Speed;
 	glm::vec2 m_Position;
 };
+#endif

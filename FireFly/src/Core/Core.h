@@ -11,12 +11,14 @@
 #endif
 
 #ifdef FF_DEBUG
-#define FF_CORE_ASSERT(x,...) do{if(!(x)) {FF_CORE_ERROR("Assertion Failed: {}",__VA_ARGS__); __debugbreak();}}while(0)
-#define FF_CLIENT_ASSERT(x,...) do{if(!(x)) {FF_CLIENT_ERROR("Assertion Failed: {}",__VA_ARGS__); __debugbreak();}}while(0)
+#define FF_CORE_ASSERT(x,...) do{if(!(x)) {FF_CORE_ERROR(__VA_ARGS__); __debugbreak();}}while(0)
+#define FF_CLIENT_ASSERT(x,...) do{if(!(x)) {FF_CLIENT_ERROR(__VA_ARGS__); __debugbreak();}}while(0)
 #else
 #define FF_CORE_ASSERT(x,...) x
 #define FF_CLIENT_ASSERT(x,...) x
 #endif
+
+#define FF_UNIQUE(name) name##__FILE__##__LINE
 
 namespace FireFly
 {

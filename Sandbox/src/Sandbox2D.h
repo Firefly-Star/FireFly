@@ -1,7 +1,7 @@
 #pragma once
 
 #include "FireFly.h"
-
+#if 0
 class Sandbox2D : public FireFly::Layer
 {
 public:
@@ -17,3 +17,4 @@ private:
 	//TEMP
 	FireFly::Ref<FireFly::Texture> m_Texture;
 };
+#endif

@@ -1,7 +1,6 @@
 #include "ffpch.h"
 
 #include "OpenGLVertexArray.h"
-#include "OpenGLError.h"
 
 #include <glad/glad.h>
 
@@ -10,29 +9,29 @@ namespace FireFly
 	OpenGLVertxArray::OpenGLVertxArray()
 		:VertexArray(), m_RendererID(0)
 	{
-		GLCALL(glGenVertexArrays(1, &m_RendererID));
+		glGenVertexArrays(1, &m_RendererID);
 	}
 
 	OpenGLVertxArray::~OpenGLVertxArray()
 	{
-		GLCALL(glDeleteVertexArrays(1, &m_RendererID));
+		glDeleteVertexArrays(1, &m_RendererID);
 	}
 
 	void OpenGLVertxArray::Bind() const
 	{
-		GLCALL(glBindVertexArray(m_RendererID));
+		glBindVertexArray(m_RendererID);
 	}
 
 	void OpenGLVertxArray::UnBind() const
 	{
-		GLCALL(glBindVertexArray(0));
+		glBindVertexArray(0);
 	}
 
 	void OpenGLVertxArray::PreForRender() const
 	{
 		if (s_ReadyForRendering != m_ID)
 		{
-			GLCALL(glBindVertexArray(m_RendererID));
+			glBindVertexArray(m_RendererID);
 		
 			if (m_Shader)
 			{
@@ -49,6 +48,6 @@ namespace FireFly
 
 	void OpenGLVertxArray::Render() const
 	{
-		GLCALL(glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr));
+		glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
 	}
 }

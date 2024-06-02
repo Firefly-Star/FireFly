@@ -17,6 +17,7 @@
 #include <unordered_set>
 
 #include "Core/Log.h"
+#include "Core/Core.h"
 
 
 #ifdef FF_PLATFORM_WINDOWS
